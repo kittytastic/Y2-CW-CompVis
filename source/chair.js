@@ -57,12 +57,21 @@ let VIEW_ANGLE_STEP = 10;
 let VIEW_STICK = 10;
 
 
+
+let g_scene_graph;
+let g_chair_y_transform;
+let g_chair_x_transform;
+
+let gl;
+let g_u_ModelMatrix;
+let g_u_NormalMatrix;
+
 function main() {
   // Retrieve <canvas> element
   var canvas = document.getElementById('webgl');
 
   // Get the rendering context for WebGL
-  var gl = getWebGLContext(canvas);
+  gl = getWebGLContext(canvas);
   if (!gl) {
     console.log('Failed to get the rendering context for WebGL');
     return;
@@ -83,8 +92,10 @@ function main() {
 
   // Get the storage locations of uniform attributes
   var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
+  g_u_ModelMatrix = u_ModelMatrix;
   var u_ViewMatrix = gl.getUniformLocation(gl.program, 'u_ViewMatrix');
   var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
+  g_u_NormalMatrix = u_NormalMatrix;
   var u_ProjMatrix = gl.getUniformLocation(gl.program, 'u_ProjMatrix');
   var u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
   var u_LightDirection = gl.getUniformLocation(gl.program, 'u_LightDirection');
@@ -114,12 +125,68 @@ function main() {
   gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
 
 
+
+
+  g_scene_graph = new SceneGraph("GOD")
+  make_scene();
+
+
+
+
   document.onkeydown = function(ev){
     keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
   };
 
   draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
 }
+
+function make_scene(){
+    //modelMatrix.rotate(g_yAngle, 0, 1, 0); // Rotate along y axis
+    //modelMatrix.rotate(g_xAngle, 1, 0, 0); // Rotate along x axis
+
+    g_chair_y_transform = new Rotate(g_yAngle, 0, 1, 0);
+    g_chair_x_transform = new Rotate(g_xAngle, 1, 0, 0);
+
+
+    let chair = new SceneNode('', false, "Chair");
+    chair.add_transform(g_chair_x_transform);
+    chair.add_transform(g_chair_y_transform);
+
+    let back = new SceneNode('box', true, "Back");
+    back.add_transform(new Translate(0, 1.25, -0.75))
+    back.add_transform(new Scale(2.0, 2.0, 0.5))
+    
+    let seat = new SceneNode('box', true, "Seat");
+    seat.add_transform(new Scale(2.0, 0.5, 2.0))
+    
+    let leg1 = new SceneNode('box', true, "Leg 1");
+    leg1.add_transform(new Translate(0.75, -1, -0.75))
+    leg1.add_transform(new Scale(0.5, 1.5, 0.5))
+
+    let leg2 = new SceneNode('box', true, "Leg 2");
+    leg2.add_transform(new Translate(0.75, -1, 0.75))
+    leg2.add_transform(new Scale(0.5, 1.5, 0.5))
+
+    let leg3 = new SceneNode('box', true, "Leg 3");
+    leg3.add_transform(new Translate(-0.75, -1, -0.75))
+    leg3.add_transform(new Scale(0.5, 1.5, 0.5))
+    
+    let leg4 = new SceneNode('box', true, "Leg 4");
+    leg4.add_transform(new Translate(-0.75, -1, 0.75))
+    leg4.add_transform(new Scale(0.5, 1.5, 0.5))
+
+    chair.add_child(back)
+    chair.add_child(seat)
+    chair.add_child(leg1)
+    chair.add_child(leg2)
+    chair.add_child(leg3)
+    chair.add_child(leg4)
+
+    g_scene_graph.add_child(chair)
+    console.log(g_scene_graph)
+
+}
+
 
 function angleIncrement(variable, angle){
     let k = (variable + angle)%360
@@ -385,7 +452,7 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
   }
 
   // Rotate, and then translate
-  modelMatrix.setTranslate(0, 0, 0);  // Translation (No translation is supported here)
+  /*modelMatrix.setTranslate(0, 0, 0);  // Translation (No translation is supported here)
   modelMatrix.rotate(g_yAngle, 0, 1, 0); // Rotate along y axis
   modelMatrix.rotate(g_xAngle, 1, 0, 0); // Rotate along x axis
 
@@ -428,7 +495,14 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
     modelMatrix.translate(0.75, -1, 0.75);  // Translation
     modelMatrix.scale(0.5, 1.5, 0.5); // Scale
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
-  modelMatrix = popMatrix();
+  modelMatrix = popMatrix();*/
+
+console.log("Graphing it")
+  let buffer_map = {'box': n}
+
+  g_chair_x_transform.update(g_xAngle, 1, 0, 0);
+  g_chair_y_transform.update(g_yAngle, 0, 1, 0);
+  g_scene_graph.draw(buffer_map)
 
 }
 
@@ -457,6 +531,7 @@ class Transform {
 
 class Rotate extends Transform{
     constructor(angle, x, y, z){
+        super()
         this.valid = true;
         this.update(angle, x, y, z)
     }
@@ -484,6 +559,7 @@ class Rotate extends Transform{
 
 class Translate extends Transform{
     constructor( x, y, z){
+        super()
         this.valid = true;
         this.update(x, y, z)
     }
@@ -510,6 +586,7 @@ class Translate extends Transform{
 
 class Scale extends Transform{
     constructor( x, y, z){
+        super()
         this.valid = true;
         this.update(x, y, z)
     }
@@ -539,15 +616,15 @@ class SceneNode{
     transformations = [];
     buffer_key;
     valid = true;
-    constructor(buffer_key){
+    constructor(buffer_key, drawn, friendly_name){
         this.valid = true;
         this.buffer_key = buffer_key;
+        this.drawn = drawn;
+        this.friendly_name = friendly_name;
     }
 
-    add_child(){
-        let new_child = this.children.push(new SceneGraph());
+    add_child(new_child){
         this.children.push(new_child);
-        return new_child;
     }
 
     add_transform(transform){
@@ -556,14 +633,8 @@ class SceneNode{
 
     draw(model_matrix, buffer_map){
         if(this.valid){
-            let buffer_index = buffer_map[this.buffer_key]
-            if(isNaN(buffer_index) || buffer_index<0){
-                console.log("Error: Scene node given a bad buffer index value");
-                return;
-            }
-
             this._apply_transformation(model_matrix)
-            this._draw_self(model_matrix, buffer_index);
+            this._draw_self(model_matrix, buffer_map);
             this._draw_children(model_matrix, buffer_map);
         }else{
             console.log("Error: unable to draw object as it is invalid");
@@ -579,42 +650,50 @@ class SceneNode{
 
     _draw_children(model_matrix, buffer_map){
         // Draw all of children
-        for(let i=0; i<this.transformations.length; i++){
+        for(let i=0; i<this.children.length; i++){
             // Give children fresh matrix that they can modify
             let fresh_matrix = new Matrix4(model_matrix);
             // Draw child
-            this.children.draw(fresh_matrix, buffer_map);
+            this.children[i].draw(fresh_matrix, buffer_map);
         }
     }
 
-    _draw_self(model_matrix, buffer_index){
-        // Pass the model matrix to the uniform variable
-        gl.uniformMatrix4fv(u_ModelMatrix, false, model_matrix.elements);
+    _draw_self(model_matrix, buffer_map){
+        if(this.drawn){
 
-        // Calculate the normal transformation matrix and pass it to u_NormalMatrix
-        g_normalMatrix.setInverseOf(model_matrix);
-        g_normalMatrix.transpose();
-        gl.uniformMatrix4fv(u_NormalMatrix, false, g_normalMatrix.elements);
+            let buffer_index = buffer_map[this.buffer_key]
+            if(isNaN(buffer_index) || buffer_index<0){
+                console.log("Error: Scene node given a bad buffer index value");
+                return;
+            }
+            // Pass the model matrix to the uniform variable
+            gl.uniformMatrix4fv(g_u_ModelMatrix, false, model_matrix.elements);
 
-        // Draw the cube
-        gl.drawElements(gl.TRIANGLES, buffer_index, gl.UNSIGNED_BYTE, 0);
+            // Calculate the normal transformation matrix and pass it to u_NormalMatrix
+            g_normalMatrix.setInverseOf(model_matrix);
+            g_normalMatrix.transpose();
+            gl.uniformMatrix4fv(g_u_NormalMatrix, false, g_normalMatrix.elements);
+
+            // Draw the cube
+            gl.drawElements(gl.TRIANGLES, buffer_index, gl.UNSIGNED_BYTE, 0);
+        }
     }
 }
 
 class SceneGraph extends SceneNode{
-    constructor(){
-
+  
+    constructor(friendly_name){
+        super()
+        this.friendly_name = friendly_name
     }
 
 
     draw(buffer_map){
         let model_matrix = new Matrix4();
         model_matrix.setTranslate(0, 0, 0);
-        if(this.valid){
-            this._draw_children(model_matrix, buffer_map);
-        }else{
-            console.log("Error: unable to draw object as it is invalid");
-        }
+
+        super._draw_children(model_matrix, buffer_map);
+        
 
     }
 
