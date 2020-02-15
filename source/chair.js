@@ -46,6 +46,10 @@ var ANGLE_STEP = 3.0;  // The increments of rotation angle (degrees)
 var g_xAngle = 0.0;    // The rotation x angle (degrees)
 var g_yAngle = 0.0;    // The rotation y angle (degrees)
 
+let g_x_pos = 15;
+let g_y_pos = 0;
+let MOVE_STEP = 0.5;
+
 function main() {
   // Retrieve <canvas> element
   var canvas = document.getElementById('webgl');
@@ -96,39 +100,54 @@ function main() {
   gl.uniform3fv(u_LightDirection, lightDirection.elements);
 
   // Calculate the view matrix and the projection matrix
-  viewMatrix.setLookAt(0, 0, 15, 0, 0, -100, 0, 1, 0);
+  //viewMatrix.setLookAt(0, 0, 15, 0, 0, -100, 0, 1, 0);
   projMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
   // Pass the model, view, and projection matrix to the uniform variable respectively
-  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+  //gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
   gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
 
 
   document.onkeydown = function(ev){
-    keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting);
+    keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
   };
 
-  draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting);
+  draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
 }
 
-function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
-  switch (ev.keyCode) {
-    case 40: // Up arrow key -> the positive rotation of arm1 around the y-axis
+function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
+  switch (ev.key) {
+    case 'ArrowUp': // Up arrow key -> the positive rotation of arm1 around the y-axis
       g_xAngle = (g_xAngle + ANGLE_STEP) % 360;
       break;
-    case 38: // Down arrow key -> the negative rotation of arm1 around the y-axis
+    case 'ArrowDown': // Down arrow key -> the negative rotation of arm1 around the y-axis
       g_xAngle = (g_xAngle - ANGLE_STEP) % 360;
       break;
-    case 39: // Right arrow key -> the positive rotation of arm1 around the y-axis
+    case 'ArrowRight': // Right arrow key -> the positive rotation of arm1 around the y-axis
       g_yAngle = (g_yAngle + ANGLE_STEP) % 360;
       break;
-    case 37: // Left arrow key -> the negative rotation of arm1 around the y-axis
+    case 'ArrowLeft': // Left arrow key -> the negative rotation of arm1 around the y-axis
       g_yAngle = (g_yAngle - ANGLE_STEP) % 360;
       break;
-    default: return; // Skip drawing at no effective action
+    case 'w':
+        g_x_pos -= MOVE_STEP;
+        break;
+    case 's':
+        g_x_pos += MOVE_STEP;
+        break;
+    case 'd':
+        g_y_pos += MOVE_STEP;
+        break;
+    case 'a':
+        g_y_pos -= MOVE_STEP; 
+        break;
+    default: 
+        console.log('Key was pressed: '+ev.keyCode)
+    return; // Skip drawing at no effective action
   }
 
+console.log("x: "+g_x_pos+" y:"+g_y_pos);
   // Draw the scene
-  draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting);
+  draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
 }
 
 
@@ -284,12 +303,18 @@ function popMatrix() { // Retrieve the matrix from the array
   return g_matrixStack.pop();
 }
 
-function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
+function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
 
   // Clear color and depth buffer
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   gl.uniform1i(u_isLighting, false); // Will not apply lighting
+  //gl.uniform1i(u_isLighting, true); // Will not apply lighting
+
+    // Calculate the view matrix and the projection matrix
+  viewMatrix.setLookAt(g_y_pos, 0, g_x_pos, 0, 0, -100, 0, 1, 0);
+  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+
 
   // Set the vertex coordinates and color (for the x, y axes)
 
@@ -333,6 +358,35 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting) {
     modelMatrix.scale(2.0, 2.0, 0.5); // Scale
     drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
   modelMatrix = popMatrix();
+
+  // Model the a leg
+  pushMatrix(modelMatrix);
+    modelMatrix.translate(0.75, -1, -0.75);  // Translation
+    modelMatrix.scale(0.5, 1.5, 0.5); // Scale
+    drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
+  modelMatrix = popMatrix();
+
+  // Model the a leg
+  pushMatrix(modelMatrix);
+    modelMatrix.translate(-0.75, -1, -0.75);  // Translation
+    modelMatrix.scale(0.5, 1.5, 0.5); // Scale
+    drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
+  modelMatrix = popMatrix();
+
+  // Model the a leg
+  pushMatrix(modelMatrix);
+    modelMatrix.translate(-0.75, -1, 0.75);  // Translation
+    modelMatrix.scale(0.5, 1.5, 0.5); // Scale
+    drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
+  modelMatrix = popMatrix();
+
+  // Model the a leg
+  pushMatrix(modelMatrix);
+    modelMatrix.translate(0.75, -1, 0.75);  // Translation
+    modelMatrix.scale(0.5, 1.5, 0.5); // Scale
+    drawbox(gl, u_ModelMatrix, u_NormalMatrix, n);
+  modelMatrix = popMatrix();
+
 }
 
 function drawbox(gl, u_ModelMatrix, u_NormalMatrix, n) {
