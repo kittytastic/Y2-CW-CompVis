@@ -1,0 +1,15 @@
+{
+  "name": "coursework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "reload -b -w ./source -s ./source/index.html -p 8081"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "reload": "^3.0.4"
+  }
+}
