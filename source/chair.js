@@ -51,7 +51,7 @@ let g_x_pos = 0;
 let g_y_pos = 0;
 let MOVE_STEP = 0.5;
 
-let g_vertical_angle = 0;
+let g_vertical_angle = 270;
 let g_horizontal_angle = 270;
 let VIEW_ANGLE_STEP = 10;
 let VIEW_STICK = 10;
@@ -125,6 +125,13 @@ function angleIncrement(variable, angle){
     let k = (variable + angle)%360
     return k>0?k:360+k;
 }
+
+function move_forwards(distance){
+    //let g_
+}
+function move_sideways(distance){}
+function move_up(distance){}
+
 
 function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
   switch (ev.key) {
@@ -344,9 +351,9 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
 
     // Calculate the view matrix and the projection matrix
     let look_x = VIEW_STICK*Math.cos(2*Math.PI * (g_horizontal_angle/360)) + g_x_pos;
-    let look_y = g_y_pos;
+    let look_y = g_y_pos + VIEW_STICK*Math.cos(2*Math.PI * (g_vertical_angle/360));
     //let look_z = -100;
-    let look_z = VIEW_STICK*Math.sin(2*Math.PI * (g_horizontal_angle/360)) + g_z_pos;
+    let look_z = VIEW_STICK*Math.sin(2*Math.PI * (g_horizontal_angle/360)) + g_z_pos +VIEW_STICK*Math.sin(2*Math.PI * (g_vertical_angle/360));
 
   viewMatrix.setLookAt(g_x_pos, g_y_pos, g_z_pos, look_x, look_y, look_z, 0, 1, 0);
   gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
