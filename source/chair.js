@@ -355,8 +355,8 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
     //let look_z = -100;
     let look_z = VIEW_STICK*Math.sin(2*Math.PI * (g_horizontal_angle/360)) + g_z_pos +VIEW_STICK*Math.sin(2*Math.PI * (g_vertical_angle/360));
 
-  viewMatrix.setLookAt(g_x_pos, g_y_pos, g_z_pos, look_x, look_y, look_z, 0, 1, 0);
-  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+    viewMatrix.setLookAt(g_x_pos, g_y_pos, g_z_pos, look_x, look_y, look_z, 0, 1, 0);
+    gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
 
 
   // Set the vertex coordinates and color (for the x, y axes)
@@ -447,4 +447,176 @@ function drawbox(gl, u_ModelMatrix, u_NormalMatrix, n) {
     gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
 
   modelMatrix = popMatrix();
+}
+
+class Transform {
+    apply(){
+        Console.log("Error: calling super transform function");
+    }
+}
+
+class Rotate extends Transform{
+    constructor(angle, x, y, z){
+        this.valid = true;
+        this.update(angle, x, y, z)
+    }
+
+    update(angle, x, y, z){
+        this.angle = angle;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+       
+        if (isNaN(angle) || isNaN(x) || isNaN(y) || isNaN(z)){
+            console.log("Error: transform ROTATE was given a bad set of values");
+            this.valid = false;
+        }
+    }
+
+    apply(matrix){
+        if(this.valid){
+            matrix.rotate(this.angle, this.x, this.y, this.z);
+        }else{
+            console.log("Error: not applying transformation as transformation isn't valid");
+        }
+    }
+}
+
+class Translate extends Transform{
+    constructor( x, y, z){
+        this.valid = true;
+        this.update(x, y, z)
+    }
+
+    update(x, y, z){
+        this.x = x;
+        this.y = y;
+        this.z = z;
+       
+        if (isNaN(x) || isNaN(y) || isNaN(z)){
+            console.log("Error: transform TRANSLATE was given a bad set of values");
+            this.valid = false;
+        }
+    }
+
+    apply(matrix){
+        if(this.valid){
+            matrix.translate(this.x, this.y, this.z);
+        }else{
+            console.log("Error: not applying transformation as transformation isn't valid");
+        }
+    }
+}
+
+class Scale extends Transform{
+    constructor( x, y, z){
+        this.valid = true;
+        this.update(x, y, z)
+    }
+
+    update(x, y, z){
+        this.x = x;
+        this.y = y;
+        this.z = z;
+       
+        if (isNaN(x) || isNaN(y) || isNaN(z)){
+            console.log("Error: transform SCALE was given a bad set of values");
+            this.valid = false;
+        }
+    }
+
+    apply(matrix){
+        if(this.valid){
+            matrix.scale(this.x, this.y, this.z);
+        }else{
+            console.log("Error: not applying transformation as transformation isn't valid");
+        }
+    }
+}
+
+class SceneNode{
+    children = [];
+    transformations = [];
+    buffer_key;
+    valid = true;
+    constructor(buffer_key){
+        this.valid = true;
+        this.buffer_key = buffer_key;
+    }
+
+    add_child(){
+        let new_child = this.children.push(new SceneGraph());
+        this.children.push(new_child);
+        return new_child;
+    }
+
+    add_transform(transform){
+        this.transformations.push(transform);
+    }
+
+    draw(model_matrix, buffer_map){
+        if(this.valid){
+            let buffer_index = buffer_map[this.buffer_key]
+            if(isNaN(buffer_index) || buffer_index<0){
+                console.log("Error: Scene node given a bad buffer index value");
+                return;
+            }
+
+            this._apply_transformation(model_matrix)
+            this._draw_self(model_matrix, buffer_index);
+            this._draw_children(model_matrix, buffer_map);
+        }else{
+            console.log("Error: unable to draw object as it is invalid");
+        }
+
+    }
+
+    _apply_transformation(model_matrix){
+        for(let i=0; i<this.transformations.length; i++){
+            this.transformations[i].apply(model_matrix);
+        }
+    }
+
+    _draw_children(model_matrix, buffer_map){
+        // Draw all of children
+        for(let i=0; i<this.transformations.length; i++){
+            // Give children fresh matrix that they can modify
+            let fresh_matrix = new Matrix4(model_matrix);
+            // Draw child
+            this.children.draw(fresh_matrix, buffer_map);
+        }
+    }
+
+    _draw_self(model_matrix, buffer_index){
+        // Pass the model matrix to the uniform variable
+        gl.uniformMatrix4fv(u_ModelMatrix, false, model_matrix.elements);
+
+        // Calculate the normal transformation matrix and pass it to u_NormalMatrix
+        g_normalMatrix.setInverseOf(model_matrix);
+        g_normalMatrix.transpose();
+        gl.uniformMatrix4fv(u_NormalMatrix, false, g_normalMatrix.elements);
+
+        // Draw the cube
+        gl.drawElements(gl.TRIANGLES, buffer_index, gl.UNSIGNED_BYTE, 0);
+    }
+}
+
+class SceneGraph extends SceneNode{
+    constructor(){
+
+    }
+
+
+    draw(buffer_map){
+        let model_matrix = new Matrix4();
+        model_matrix.setTranslate(0, 0, 0);
+        if(this.valid){
+            this._draw_children(model_matrix, buffer_map);
+        }else{
+            console.log("Error: unable to draw object as it is invalid");
+        }
+
+    }
+
+
 }
