@@ -46,9 +46,16 @@ var ANGLE_STEP = 3.0;  // The increments of rotation angle (degrees)
 var g_xAngle = 0.0;    // The rotation x angle (degrees)
 var g_yAngle = 0.0;    // The rotation y angle (degrees)
 
-let g_x_pos = 15;
+let g_z_pos = 15;
+let g_x_pos = 0;
 let g_y_pos = 0;
 let MOVE_STEP = 0.5;
+
+let g_vertical_angle = 0;
+let g_horizontal_angle = 270;
+let VIEW_ANGLE_STEP = 10;
+let VIEW_STICK = 10;
+
 
 function main() {
   // Retrieve <canvas> element
@@ -114,6 +121,11 @@ function main() {
   draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
 }
 
+function angleIncrement(variable, angle){
+    let k = (variable + angle)%360
+    return k>0?k:360+k;
+}
+
 function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
   switch (ev.key) {
     case 'ArrowUp': // Up arrow key -> the positive rotation of arm1 around the y-axis
@@ -129,23 +141,42 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatr
       g_yAngle = (g_yAngle - ANGLE_STEP) % 360;
       break;
     case 'w':
-        g_x_pos -= MOVE_STEP;
+        g_z_pos -= MOVE_STEP;
         break;
     case 's':
-        g_x_pos += MOVE_STEP;
+        g_z_pos += MOVE_STEP;
         break;
     case 'd':
-        g_y_pos += MOVE_STEP;
+        g_x_pos += MOVE_STEP;
         break;
     case 'a':
+        g_x_pos -= MOVE_STEP; 
+        break;
+    case 'z':
+        g_y_pos += MOVE_STEP; 
+        break;
+    case 'c':
         g_y_pos -= MOVE_STEP; 
+        break;
+    case 'u':
+        g_vertical_angle = angleIncrement(g_vertical_angle, VIEW_ANGLE_STEP);
+        break;
+    case 'j':
+        g_vertical_angle = angleIncrement(g_vertical_angle, -VIEW_ANGLE_STEP);
+        break;
+    case 'h':
+        g_horizontal_angle = angleIncrement(g_horizontal_angle, VIEW_ANGLE_STEP);
+        break;
+    case 'k':
+        g_horizontal_angle = angleIncrement(g_horizontal_angle, -VIEW_ANGLE_STEP);
         break;
     default: 
         console.log('Key was pressed: '+ev.keyCode)
     return; // Skip drawing at no effective action
   }
 
-console.log("x: "+g_x_pos+" y:"+g_y_pos);
+console.log("x: "+g_z_pos+" y:"+g_x_pos);
+console.log("horizontal view: "+g_horizontal_angle+" vertical view:"+g_vertical_angle);
   // Draw the scene
   draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
 }
@@ -312,7 +343,12 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
   //gl.uniform1i(u_isLighting, true); // Will not apply lighting
 
     // Calculate the view matrix and the projection matrix
-  viewMatrix.setLookAt(g_y_pos, 0, g_x_pos, 0, 0, -100, 0, 1, 0);
+    let look_x = VIEW_STICK*Math.cos(2*Math.PI * (g_horizontal_angle/360)) + g_x_pos;
+    let look_y = g_y_pos;
+    //let look_z = -100;
+    let look_z = VIEW_STICK*Math.sin(2*Math.PI * (g_horizontal_angle/360)) + g_z_pos;
+
+  viewMatrix.setLookAt(g_x_pos, g_y_pos, g_z_pos, look_x, look_y, look_z, 0, 1, 0);
   gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
 
 
