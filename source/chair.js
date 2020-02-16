@@ -46,16 +46,6 @@ var ANGLE_STEP = 3.0;  // The increments of rotation angle (degrees)
 var g_xAngle = 0.0;    // The rotation x angle (degrees)
 var g_yAngle = 0.0;    // The rotation y angle (degrees)
 
-let g_z_pos = 15;
-let g_x_pos = 0;
-let g_y_pos = 0;
-let MOVE_STEP = 0.5;
-
-let g_vertical_angle = 270;
-let g_horizontal_angle = 270;
-let VIEW_ANGLE_STEP = 10;
-let VIEW_STICK = 10;
-
 let g_scene_graph;
 let g_chair_y_transform;
 let g_chair_x_transform;
@@ -64,8 +54,9 @@ let gl;
 let g_u_ModelMatrix;
 let g_u_NormalMatrix;
 
-
 let g_camera;
+let MOVE_STEP = 0.5;
+let VIEW_ANGLE_STEP = 10; 
 
 function main() {
   // Retrieve <canvas> element
@@ -118,17 +109,18 @@ function main() {
   lightDirection.normalize();     // Normalize
   gl.uniform3fv(u_LightDirection, lightDirection.elements);
 
-  // Calculate the view matrix and the projection matrix
-  //viewMatrix.setLookAt(0, 0, 15, 0, 0, -100, 0, 1, 0);
+  
+  // Set perspective
   projMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
-  // Pass the model, view, and projection matrix to the uniform variable respectively
-  //gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
   gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
 
+  // Initialise camera
   g_camera = new Camera(0,0,15,0,0);
 
+  // Make 3D models
   let models = make_all_models();
  
+  // Make scene graph
   g_scene_graph = make_scene(models);
 
   
@@ -138,20 +130,6 @@ function main() {
 
   draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
 }
-
-
-
-
-function angleIncrement(variable, angle){
-    let k = (variable + angle)%360
-    return k>0?k:360+k;
-}
-
-function move_forwards(distance){
-    //let g_
-}
-function move_sideways(distance){}
-function move_up(distance){}
 
 
 function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
@@ -169,43 +147,33 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatr
       g_yAngle = (g_yAngle - ANGLE_STEP) % 360;
       break;
     case 'w':
-        //g_z_pos -= MOVE_STEP;
         g_camera.move_forwards(MOVE_STEP);
         break;
     case 's':
-        //g_z_pos += MOVE_STEP;
         g_camera.move_backwards(MOVE_STEP);
         break;
     case 'd':
-        //g_x_pos += MOVE_STEP;
         g_camera.move_left(MOVE_STEP);
         break;
     case 'a':
-        //g_x_pos -= MOVE_STEP; 
         g_camera.move_right(MOVE_STEP);
         break;
     case 'z':
-        //g_y_pos += MOVE_STEP;
         g_camera.move_up(MOVE_STEP); 
         break;
     case 'c':
-        //g_y_pos -= MOVE_STEP;
         g_camera.move_down(MOVE_STEP); 
         break;
     case 'u':
-        //g_vertical_angle = angleIncrement(g_vertical_angle, VIEW_ANGLE_STEP);
         g_camera.look_up(VIEW_ANGLE_STEP);
         break;
     case 'j':
-        //g_vertical_angle = angleIncrement(g_vertical_angle, -VIEW_ANGLE_STEP);
         g_camera.look_down(VIEW_ANGLE_STEP);
         break;
     case 'h':
-        //g_horizontal_angle = angleIncrement(g_horizontal_angle, VIEW_ANGLE_STEP);
         g_camera.look_left(VIEW_ANGLE_STEP);
         break;
     case 'k':
-       // g_horizontal_angle = angleIncrement(g_horizontal_angle, -VIEW_ANGLE_STEP);
        g_camera.look_right(VIEW_ANGLE_STEP);
         break;
     default: 
@@ -213,8 +181,7 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatr
     return; // Skip drawing at no effective action
   }
 
-//console.log("x: "+g_z_pos+" y:"+g_x_pos);
-//console.log("horizontal view: "+g_horizontal_angle+" vertical view:"+g_vertical_angle);
+
   // Draw the scene
   draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
 }
@@ -276,20 +243,14 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
   // Clear color and depth buffer
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+  // Set camera
+  let viewMatrix = g_camera.make_view_matrix();
+  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+
+  
+  
   gl.uniform1i(u_isLighting, false); // Will not apply lighting
-  //gl.uniform1i(u_isLighting, true); // Will not apply lighting
-
-    // Calculate the view matrix and the projection matrix
-    /*let look_x = VIEW_STICK*Math.cos(2*Math.PI * (g_horizontal_angle/360)) + g_x_pos;
-    let look_y = g_y_pos + VIEW_STICK*Math.cos(2*Math.PI * (g_vertical_angle/360));
-    //let look_z = -100;
-    let look_z = VIEW_STICK*Math.sin(2*Math.PI * (g_horizontal_angle/360)) + g_z_pos +VIEW_STICK*Math.sin(2*Math.PI * (g_vertical_angle/360));
-
-    viewMatrix.setLookAt(g_x_pos, g_y_pos, g_z_pos, look_x, look_y, look_z, 0, 1, 0);*/
-    let viewMatrix = g_camera.make_view_matrix();
-    gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
-
-
+  
   // Set the vertex coordinates and color (for the x, y axes)
 
   var n = initAxesVertexBuffers(gl);
@@ -315,121 +276,5 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
   
   // Draw scene
   g_scene_graph.draw()
-
-}
-
-
-function to_radians(deg){
-  let k = (deg%360)
-  deg = k>0?k:360+k
-  return Math.PI * (deg/180)
-}
-
-
-class Camera{
-  // Create a cube
-    //  y
-    //  |  z
-    //  | /
-    //  |/      
-    //  O------ x
-
-    // 0,0 looking angles would have you on the origin looking at z
-    // angles go anticlokwise
-
-
-  x; y; z;
-  horizontal_angle; vertical_angle;
-  orientation;
-  camera_matrix;
-
-  o_x; o_y; o_z;
-  constructor(x, y, z, horizontal_angle, vertical_angle){
-    this.x = x; 
-    this.y = y;
-    this.z = z; 
-    this.horizontal_angle = horizontal_angle; 
-    this.vertical_angle = vertical_angle;
-
-    /*this.orientation = which_way_up;
-    this.o_x, this.o_y, this.o_z = 0;
-    switch(which_way_up){
-      case 'x':
-        this.o_x = 1.0
-        break;
-      case 'y':
-        this.o_y = 1.0;
-      case 'z':
-        this.o_z = 1.0;
-      default:
-        console.log("Error: camera was given an unknown orientation "+this.orientation+" Defaulting to x as up")
-    }*/
-
-    this.camera_matrix = new Matrix4()
-    this.camera_matrix.setTranslate(x,y,z);
-    this.camera_matrix.rotate(to_radians(this.horizontal_angle), this.o_x, this.o_y, this.o_z);
-
-  }
-
-  make_view_matrix(){
-    console.log("x:"+this.x+"  y:"+this.y+"  z:"+this.z + "  hoz:"+this.horizontal_angle+"  vert:"+this.vertical_angle);
-    let cm = new Matrix4()
-    cm.setTranslate(this.x,this.y,this.z);
-    cm.rotate(this.horizontal_angle, 0, 1, 0);
-    cm.rotate(this.vertical_angle, 1, 0, 0);
-    cm.invert();
-    return cm;
-
-    
-  }
-
-
-  move_forwards(step){
-    this._move_on_plane(step, 180);
-  }
-
-  move_backwards(step){
-    this._move_on_plane(step, 0)
-  }
-
-  move_left(step){
-    this._move_on_plane(step, 90)
-  }
-
-  move_right(step){
-    this._move_on_plane(step, -90)
-  }
-
-  _move_on_plane(step, offset){
-    let t = to_radians(this.horizontal_angle+offset)
-    this.x += step * Math.sin(t)
-    this.z += step * Math.cos(t)
-  }
-
-  move_up(step){
-    this.y += step;
-  }
-
-  move_down(step){
-    this.y -= step;
-  }
-
-  look_left(angle){
-    this.horizontal_angle += angle
-  }
-
-  look_right(angle){
-    this.horizontal_angle -= angle
-  }
-
-  look_up(angle){
-    this.vertical_angle += angle
-  }
-
-  look_down(angle){
-    this.vertical_angle -= angle
-  }
-
-
 
 }
