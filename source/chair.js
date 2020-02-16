@@ -38,38 +38,57 @@ function main() {
   // Clear color and depth buffer
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+  let uniforms = {}
+
+  uniforms.u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
+  uniforms.u_ViewMatrix = gl.getUniformLocation(gl.program, 'u_ViewMatrix');
+  uniforms.u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
+  uniforms.u_ProjMatrix = gl.getUniformLocation(gl.program, 'u_ProjMatrix');
+  uniforms.u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
+  uniforms.u_LightDirection = gl.getUniformLocation(gl.program, 'u_LightDirection');
+  uniforms.u_isLighting = gl.getUniformLocation(gl.program, 'u_isLighting');
   // Get the storage locations of uniform attributes
-  var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
+  /*var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
   g_u_ModelMatrix = u_ModelMatrix;
   var u_ViewMatrix = gl.getUniformLocation(gl.program, 'u_ViewMatrix');
   var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
   g_u_NormalMatrix = u_NormalMatrix;
   var u_ProjMatrix = gl.getUniformLocation(gl.program, 'u_ProjMatrix');
   var u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
-  var u_LightDirection = gl.getUniformLocation(gl.program, 'u_LightDirection');
+  var u_LightDirection = gl.getUniformLocation(gl.program, 'u_LightDirection');*/
 
   // Trigger using lighting or not
-  var u_isLighting = gl.getUniformLocation(gl.program, 'u_isLighting'); 
+  //var u_isLighting = gl.getUniformLocation(gl.program, 'u_isLighting'); 
 
-  if (!u_ModelMatrix || !u_ViewMatrix || !u_NormalMatrix ||
+  for(key in uniforms){
+    if(!uniforms[key]){
+      console.log("Error: failed to get uniform "+key);
+      return;
+    }
+  }
+
+  g_u_ModelMatrix = uniforms.u_ModelMatrix;
+  g_u_NormalMatrix = uniforms.u_NormalMatrix;
+
+  /*if (!u_ModelMatrix || !u_ViewMatrix || !u_NormalMatrix ||
       !u_ProjMatrix || !u_LightColor || !u_LightDirection ||
       !u_isLighting ) { 
     console.log('Failed to Get the storage locations of u_ModelMatrix, u_ViewMatrix, and/or u_ProjMatrix');
     return;
-  }
+  }*/
 
   // Set the light color (white)
-  gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
+  gl.uniform3f(uniforms.u_LightColor, 1.0, 1.0, 1.0);
   // Set the light direction (in the world coordinate)
   var lightDirection = new Vector3([0.5, 3.0, 4.0]);
   lightDirection.normalize();     // Normalize
-  gl.uniform3fv(u_LightDirection, lightDirection.elements);
+  gl.uniform3fv(uniforms.u_LightDirection, lightDirection.elements);
 
   
   // Set perspective
   let projMatrix = new Matrix4();  
   projMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
-  gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
+  gl.uniformMatrix4fv(uniforms.u_ProjMatrix, false, projMatrix.elements);
 
   // Initialise camera
   g_camera = new Camera(0,0,15,0,0);
@@ -82,14 +101,14 @@ function main() {
 
   
   document.onkeydown = function(ev){
-    keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
+    keydown(ev, gl, uniforms);
   };
 
-  draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
+  draw(gl, uniforms);
 }
 
 
-function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
+function keydown(ev, gl, uniforms) {
   switch (ev.key) {
     case 'ArrowUp': // Up arrow key -> the positive rotation of arm1 around the y-axis
       g_xAngle = (g_xAngle + ANGLE_STEP) % 360;
@@ -140,24 +159,24 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatr
 
 
   // Draw the scene
-  draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix);
+  draw(gl, uniforms);
 }
 
 
-function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
+function draw(gl, uniforms) {
 
   // Clear color and depth buffer
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // Set camera
   let viewMatrix = g_camera.make_view_matrix();
-  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+  gl.uniformMatrix4fv(uniforms.u_ViewMatrix, false, viewMatrix.elements);
 
   
-  draw_axis(u_isLighting, u_ModelMatrix);
+  draw_axis(uniforms.u_isLighting, uniforms.u_ModelMatrix);
   
 
-  gl.uniform1i(u_isLighting, true); // Will apply lighting
+  gl.uniform1i(uniforms.u_isLighting, true); // Will apply lighting
 
   
   // Transform the chair
