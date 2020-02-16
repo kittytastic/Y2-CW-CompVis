@@ -21,7 +21,7 @@ class Camera{
   }
 
   make_view_matrix(){
-    console.log("x:"+this.x+"  y:"+this.y+"  z:"+this.z + "  hoz:"+this.horizontal_angle+"  vert:"+this.vertical_angle);
+    //console.log("x:"+this.x+"  y:"+this.y+"  z:"+this.z + "  hoz:"+this.horizontal_angle+"  vert:"+this.vertical_angle);
     let cm = new Matrix4()
     cm.setTranslate(this.x,this.y,this.z);
     cm.rotate(this.horizontal_angle, 0, 1, 0);

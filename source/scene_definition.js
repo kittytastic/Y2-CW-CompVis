@@ -5,11 +5,23 @@ function make_scene(models){
     g_chair_y_transform = new Rotate(g_yAngle, 0, 1, 0);
     g_chair_x_transform = new Rotate(g_xAngle, 1, 0, 0);
 
+    let chair1 = make_chair(models);
+    chair1.add_transform(g_chair_x_transform);
+    chair1.add_transform(g_chair_y_transform);
 
+    let chair2 = make_chair(models);
+    chair2.add_transform(new Translate(-5,0,0))
+   
+
+    scene_graph.add_child(chair1)
+    scene_graph.add_child(chair2)
+
+    return scene_graph;
+}
+
+function make_chair(models){
     let chair = new SceneNode(null, false, "Chair");
-    chair.add_transform(g_chair_x_transform);
-    chair.add_transform(g_chair_y_transform);
-
+    
     let back = new SceneNode(models['box'], true, "Back");
     back.add_transform(new Translate(0, 1.25, -0.75))
     back.add_transform(new Scale(2.0, 2.0, 0.5))
@@ -40,7 +52,5 @@ function make_scene(models){
     chair.add_child(leg3)
     chair.add_child(leg4)
 
-    scene_graph.add_child(chair)
-
-    return scene_graph;
+    return chair;
 }
