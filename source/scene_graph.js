@@ -145,9 +145,10 @@ class SceneNode{
             gl.uniformMatrix4fv(g_u_ModelMatrix, false, model_matrix.elements);
 
             // Calculate the normal transformation matrix and pass it to u_NormalMatrix
-            g_normalMatrix.setInverseOf(model_matrix);
-            g_normalMatrix.transpose();
-            gl.uniformMatrix4fv(g_u_NormalMatrix, false, g_normalMatrix.elements);
+            let normalMatrix = new Matrix4()
+            normalMatrix.setInverseOf(model_matrix);
+            normalMatrix.transpose();
+            gl.uniformMatrix4fv(g_u_NormalMatrix, false, normalMatrix.elements);
 
             this.model.draw();
         }
