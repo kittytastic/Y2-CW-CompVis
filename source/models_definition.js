@@ -1,4 +1,14 @@
-function make_square_obj() {
+function make_all_models(){
+    let models = {}
+
+    models['box'] = make_box_model();
+
+
+    return models
+}
+
+
+function make_box_model() {
     // Create a cube
     //    v6----- v5
     //   /|      /|

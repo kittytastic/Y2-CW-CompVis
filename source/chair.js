@@ -127,10 +127,10 @@ function main() {
 
 
 
-  g_box_model = make_square_obj();
+  //g_box_model = make_square_obj();
+  let models = make_all_models();
  
-
-  g_scene_graph = make_scene();
+  g_scene_graph = make_scene(models);
 
   
   document.onkeydown = function(ev){
@@ -300,13 +300,13 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
 
   
 
-  g_box_model.switch_to_me();
+  //g_box_model.switch_to_me();
   
 
-  let buffer_map = {'box': g_box_model.n}
+  //let buffer_map = {'box': g_box_model.n}
 
   g_chair_x_transform.update(g_xAngle, 1, 0, 0);
   g_chair_y_transform.update(g_yAngle, 0, 1, 0);
-  g_scene_graph.draw(buffer_map)
+  g_scene_graph.draw()
 
 }

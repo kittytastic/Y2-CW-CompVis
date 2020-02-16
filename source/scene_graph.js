@@ -89,11 +89,11 @@ class Scale extends Transform{
 class SceneNode{
     children = [];
     transformations = [];
-    buffer_key;
+    model;
     valid = true;
-    constructor(buffer_key, drawn, friendly_name){
+    constructor(model, drawn, friendly_name){
         this.valid = true;
-        this.buffer_key = buffer_key;
+        this.model = model;
         this.drawn = drawn;
         this.friendly_name = friendly_name;
     }
@@ -106,11 +106,11 @@ class SceneNode{
         this.transformations.push(transform);
     }
 
-    draw(model_matrix, buffer_map){
+    draw(model_matrix){
         if(this.valid){
             this._apply_transformation(model_matrix)
-            this._draw_self(model_matrix, buffer_map);
-            this._draw_children(model_matrix, buffer_map);
+            this._draw_self(model_matrix);
+            this._draw_children(model_matrix);
         }else{
             console.log("Error: unable to draw object as it is invalid");
         }
@@ -123,22 +123,22 @@ class SceneNode{
         }
     }
 
-    _draw_children(model_matrix, buffer_map){
+    _draw_children(model_matrix){
         // Draw all of children
         for(let i=0; i<this.children.length; i++){
             // Give children fresh matrix that they can modify
             let fresh_matrix = new Matrix4(model_matrix);
             // Draw child
-            this.children[i].draw(fresh_matrix, buffer_map);
+            this.children[i].draw(fresh_matrix);
         }
     }
 
-    _draw_self(model_matrix, buffer_map){
+    _draw_self(model_matrix){
         if(this.drawn){
 
-            let buffer_index = buffer_map[this.buffer_key]
-            if(isNaN(buffer_index) || buffer_index<0){
-                console.log("Error: Scene node given a bad buffer index value");
+            
+            if(!this.model){
+                console.log("Error: Scene node given a bad model, cannot draw");
                 return;
             }
             // Pass the model matrix to the uniform variable
@@ -149,8 +149,7 @@ class SceneNode{
             g_normalMatrix.transpose();
             gl.uniformMatrix4fv(g_u_NormalMatrix, false, g_normalMatrix.elements);
 
-            // Draw the cube
-            gl.drawElements(gl.TRIANGLES, buffer_index, gl.UNSIGNED_BYTE, 0);
+            this.model.draw();
         }
     }
 }
@@ -163,11 +162,11 @@ class SceneGraph extends SceneNode{
     }
 
 
-    draw(buffer_map){
+    draw(){
         let model_matrix = new Matrix4();
         model_matrix.setTranslate(0, 0, 0);
 
-        super._draw_children(model_matrix, buffer_map);
+        super._draw_children(model_matrix);
         
 
     }

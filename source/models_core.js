@@ -96,5 +96,11 @@
       }
     }
 
+    draw(){
+      this.switch_to_me()
+      // Draw the cube
+      gl.drawElements(gl.TRIANGLES, this.n, gl.UNSIGNED_BYTE, 0);
+    }
+
   }
 
