@@ -10,7 +10,6 @@ let g_camera;
 const MOVE_STEP = 0.5;
 const VIEW_ANGLE_STEP = 10; 
 
-
 const UNIFORMS = ['u_ModelMatrix', 'u_ViewMatrix', 'u_NormalMatrix', 'u_ProjMatrix', 'u_LightColor', 'u_LightDirection', 'u_isLighting']
 
 function main() {
@@ -20,14 +19,14 @@ function main() {
   // Get the rendering context for WebGL
   let gl = getWebGLContext(canvas);
   if (!gl) {
-    console.log('Failed to get the rendering context for WebGL');
+    console.log('Error: Failed to get the rendering context for WebGL');
     return;
   }
 
 
   // Initialize shaders
   if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
-    console.log('Failed to intialize shaders.');
+    console.log('Error: Failed to intialise shaders.');
     return;
   }
 
@@ -39,7 +38,6 @@ function main() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   
-
   // Get the storage locations of uniform attributes
   let uniforms = {}
   for(key in UNIFORMS){
@@ -56,6 +54,7 @@ function main() {
 
   // Set the light color (white)
   gl.uniform3f(uniforms.u_LightColor, 1.0, 1.0, 1.0);
+  
   // Set the light direction (in the world coordinate)
   var lightDirection = new Vector3([0.5, 3.0, 4.0]);
   lightDirection.normalize();     // Normalize
@@ -77,26 +76,28 @@ function main() {
   g_scene_graph = make_scene(models);
 
   
+  // Bind keydown listener
   document.onkeydown = function(ev){
     keydown(ev, gl, uniforms);
   };
 
+  // Draw first frame
   draw(gl, uniforms);
 }
 
 
 function keydown(ev, gl, uniforms) {
   switch (ev.key) {
-    case 'ArrowUp': // Up arrow key -> the positive rotation of arm1 around the y-axis
+    case 'ArrowUp': 
       g_xAngle = (g_xAngle + ANGLE_STEP) % 360;
       break;
-    case 'ArrowDown': // Down arrow key -> the negative rotation of arm1 around the y-axis
+    case 'ArrowDown': 
       g_xAngle = (g_xAngle - ANGLE_STEP) % 360;
       break;
-    case 'ArrowRight': // Right arrow key -> the positive rotation of arm1 around the y-axis
+    case 'ArrowRight':
       g_yAngle = (g_yAngle + ANGLE_STEP) % 360;
       break;
-    case 'ArrowLeft': // Left arrow key -> the negative rotation of arm1 around the y-axis
+    case 'ArrowLeft':
       g_yAngle = (g_yAngle - ANGLE_STEP) % 360;
       break;
     case 'w':
@@ -149,13 +150,15 @@ function draw(gl, uniforms) {
   let viewMatrix = g_camera.make_view_matrix();
   gl.uniformMatrix4fv(uniforms.u_ViewMatrix, false, viewMatrix.elements);
 
+  // Don't apply lighting
+  gl.uniform1i(uniforms.u_isLighting, false);
   
+  // Draw axis
   draw_axis(gl, uniforms);
   
+  // Apply lighting
+  gl.uniform1i(uniforms.u_isLighting, true);
 
-  gl.uniform1i(uniforms.u_isLighting, true); // Will apply lighting
-
-  
   // Transform the chair
   g_chair_x_transform.update(g_xAngle, 1, 0, 0);
   g_chair_y_transform.update(g_yAngle, 0, 1, 0);
@@ -170,7 +173,6 @@ function draw(gl, uniforms) {
 
 
 function draw_axis(gl, uniforms){
-  gl.uniform1i(uniforms.u_isLighting, false); // Will not apply lighting
   
   // Set the vertex coordinates and color (for the x, y axes)
 
