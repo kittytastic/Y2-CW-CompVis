@@ -106,11 +106,11 @@ class SceneNode{
         this.transformations.push(transform);
     }
 
-    draw(model_matrix){
+    draw(model_matrix, gl, uniforms){
         if(this.valid){
             this._apply_transformation(model_matrix)
-            this._draw_self(model_matrix);
-            this._draw_children(model_matrix);
+            this._draw_self(model_matrix, gl, uniforms);
+            this._draw_children(model_matrix, gl, uniforms);
         }else{
             console.log("Error: unable to draw object as it is invalid");
         }
@@ -123,17 +123,17 @@ class SceneNode{
         }
     }
 
-    _draw_children(model_matrix){
+    _draw_children(model_matrix, gl, uniforms){
         // Draw all of children
         for(let i=0; i<this.children.length; i++){
             // Give children fresh matrix that they can modify
             let fresh_matrix = new Matrix4(model_matrix);
             // Draw child
-            this.children[i].draw(fresh_matrix);
+            this.children[i].draw(fresh_matrix, gl, uniforms);
         }
     }
 
-    _draw_self(model_matrix){
+    _draw_self(model_matrix, gl, uniforms){
         if(this.drawn){
 
             
@@ -142,15 +142,15 @@ class SceneNode{
                 return;
             }
             // Pass the model matrix to the uniform variable
-            gl.uniformMatrix4fv(g_u_ModelMatrix, false, model_matrix.elements);
+            gl.uniformMatrix4fv(uniforms.u_ModelMatrix, false, model_matrix.elements);
 
             // Calculate the normal transformation matrix and pass it to u_NormalMatrix
             let normalMatrix = new Matrix4()
             normalMatrix.setInverseOf(model_matrix);
             normalMatrix.transpose();
-            gl.uniformMatrix4fv(g_u_NormalMatrix, false, normalMatrix.elements);
+            gl.uniformMatrix4fv(uniforms.u_NormalMatrix, false, normalMatrix.elements);
 
-            this.model.draw();
+            this.model.draw(gl);
         }
     }
 }
@@ -163,11 +163,11 @@ class SceneGraph extends SceneNode{
     }
 
 
-    draw(){
+    draw(gl, uniforms){
         let model_matrix = new Matrix4();
         model_matrix.setTranslate(0, 0, 0);
 
-        super._draw_children(model_matrix);
+        super._draw_children(model_matrix, gl, uniforms);
         
 
     }

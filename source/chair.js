@@ -1,4 +1,4 @@
-var ANGLE_STEP = 3.0;  // The increments of rotation angle (degrees)
+const ANGLE_STEP = 3.0;  // The increments of rotation angle (degrees)
 var g_xAngle = 0.0;    // The rotation x angle (degrees)
 var g_yAngle = 0.0;    // The rotation y angle (degrees)
 
@@ -6,24 +6,24 @@ let g_scene_graph;
 let g_chair_y_transform;
 let g_chair_x_transform;
 
-let gl;
-let g_u_ModelMatrix;
-let g_u_NormalMatrix;
-
 let g_camera;
-let MOVE_STEP = 0.5;
-let VIEW_ANGLE_STEP = 10; 
+const MOVE_STEP = 0.5;
+const VIEW_ANGLE_STEP = 10; 
+
+
+const UNIFORMS = ['u_ModelMatrix', 'u_ViewMatrix', 'u_NormalMatrix', 'u_ProjMatrix', 'u_LightColor', 'u_LightDirection', 'u_isLighting']
 
 function main() {
   // Retrieve <canvas> element
   var canvas = document.getElementById('webgl');
 
   // Get the rendering context for WebGL
-  gl = getWebGLContext(canvas);
+  let gl = getWebGLContext(canvas);
   if (!gl) {
     console.log('Failed to get the rendering context for WebGL');
     return;
   }
+
 
   // Initialize shaders
   if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
@@ -38,44 +38,21 @@ function main() {
   // Clear color and depth buffer
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  let uniforms = {}
+  
 
-  uniforms.u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
-  uniforms.u_ViewMatrix = gl.getUniformLocation(gl.program, 'u_ViewMatrix');
-  uniforms.u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
-  uniforms.u_ProjMatrix = gl.getUniformLocation(gl.program, 'u_ProjMatrix');
-  uniforms.u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
-  uniforms.u_LightDirection = gl.getUniformLocation(gl.program, 'u_LightDirection');
-  uniforms.u_isLighting = gl.getUniformLocation(gl.program, 'u_isLighting');
   // Get the storage locations of uniform attributes
-  /*var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
-  g_u_ModelMatrix = u_ModelMatrix;
-  var u_ViewMatrix = gl.getUniformLocation(gl.program, 'u_ViewMatrix');
-  var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
-  g_u_NormalMatrix = u_NormalMatrix;
-  var u_ProjMatrix = gl.getUniformLocation(gl.program, 'u_ProjMatrix');
-  var u_LightColor = gl.getUniformLocation(gl.program, 'u_LightColor');
-  var u_LightDirection = gl.getUniformLocation(gl.program, 'u_LightDirection');*/
+  let uniforms = {}
+  for(key in UNIFORMS){
+    let name = UNIFORMS[key]
+    uniforms[name] = gl.getUniformLocation(gl.program, name);
 
-  // Trigger using lighting or not
-  //var u_isLighting = gl.getUniformLocation(gl.program, 'u_isLighting'); 
-
-  for(key in uniforms){
-    if(!uniforms[key]){
-      console.log("Error: failed to get uniform "+key);
+    // Check uniform exists
+    if(!uniforms[name]){
+      console.log("Error: failed to get uniform "+name);
       return;
     }
   }
 
-  g_u_ModelMatrix = uniforms.u_ModelMatrix;
-  g_u_NormalMatrix = uniforms.u_NormalMatrix;
-
-  /*if (!u_ModelMatrix || !u_ViewMatrix || !u_NormalMatrix ||
-      !u_ProjMatrix || !u_LightColor || !u_LightDirection ||
-      !u_isLighting ) { 
-    console.log('Failed to Get the storage locations of u_ModelMatrix, u_ViewMatrix, and/or u_ProjMatrix');
-    return;
-  }*/
 
   // Set the light color (white)
   gl.uniform3f(uniforms.u_LightColor, 1.0, 1.0, 1.0);
@@ -94,7 +71,7 @@ function main() {
   g_camera = new Camera(0,0,15,0,0);
 
   // Make 3D models
-  let models = make_all_models();
+  let models = make_all_models(gl);
  
   // Make scene graph
   g_scene_graph = make_scene(models);
@@ -173,7 +150,7 @@ function draw(gl, uniforms) {
   gl.uniformMatrix4fv(uniforms.u_ViewMatrix, false, viewMatrix.elements);
 
   
-  draw_axis(uniforms.u_isLighting, uniforms.u_ModelMatrix);
+  draw_axis(gl, uniforms);
   
 
   gl.uniform1i(uniforms.u_isLighting, true); // Will apply lighting
@@ -184,7 +161,7 @@ function draw(gl, uniforms) {
   g_chair_y_transform.update(g_yAngle, 0, 1, 0);
   
   // Draw scene
-  g_scene_graph.draw()
+  g_scene_graph.draw(gl, uniforms)
 
 }
 
@@ -192,8 +169,8 @@ function draw(gl, uniforms) {
 
 
 
-function draw_axis(u_isLighting, u_ModelMatrix){
-  gl.uniform1i(u_isLighting, false); // Will not apply lighting
+function draw_axis(gl, uniforms){
+  gl.uniform1i(uniforms.u_isLighting, false); // Will not apply lighting
   
   // Set the vertex coordinates and color (for the x, y axes)
 
@@ -207,7 +184,7 @@ function draw_axis(u_isLighting, u_ModelMatrix){
   var modelMatrix = new Matrix4(); 
   modelMatrix.setTranslate(0, 0, 0);  // No Translation
   // Pass the model matrix to the uniform variable
-  gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+  gl.uniformMatrix4fv(uniforms.u_ModelMatrix, false, modelMatrix.elements);
 
   // Draw x and y axes
   gl.drawArrays(gl.LINES, 0, n);

@@ -4,13 +4,13 @@
   
         }
   
-        switch_to_me(){
+        switch_to_me(gl){
           console.log("Error: model hasn't initiated switch to me function")
         }
     }  
   
   class Attribute{
-    constructor(attribute, data, num, type, offset, stride){
+    constructor(gl, attribute, data, num, type, offset, stride){
       this.attribute = attribute;
       this.data = data;
       this.num = num;
@@ -34,7 +34,7 @@
 
     }
 
-    bind(){
+    bind(gl){
      
       if(!this.has_error){
         // Write date into the buffer object
@@ -62,13 +62,13 @@
 
 
   class Basic3DModel extends Model{
-    constructor(vertices, normals, colors, indices){
+    constructor(gl, vertices, normals, colors, indices){
         super();
         this.attributes = []
         this.has_error = false
-        this.attributes.push(new Attribute('a_Position', vertices, 3, gl.FLOAT));
-        this.attributes.push(new Attribute('a_Color', colors, 3, gl.FLOAT));
-        this.attributes.push(new Attribute('a_Normal', normals, 3, gl.FLOAT));
+        this.attributes.push(new Attribute(gl, 'a_Position', vertices, 3, gl.FLOAT));
+        this.attributes.push(new Attribute(gl, 'a_Color', colors, 3, gl.FLOAT));
+        this.attributes.push(new Attribute(gl, 'a_Normal', normals, 3, gl.FLOAT));
         this.n = indices.length;
 
         this.buffer = gl.createBuffer()
@@ -84,20 +84,20 @@
 
     }
 
-    switch_to_me(){
+    switch_to_me(gl){
       if(!this.has_error){
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
 
       for(let i=0; i<this.attributes.length; i++){
         // TODO error check
-        this.attributes[i].bind();
+        this.attributes[i].bind(gl);
       }}else{
         console.log("Error: cannot switch to model as it has an error")
       }
     }
 
-    draw(){
-      this.switch_to_me()
+    draw(gl){
+      this.switch_to_me(gl)
       // Draw the cube
       gl.drawElements(gl.TRIANGLES, this.n, gl.UNSIGNED_BYTE, 0);
     }

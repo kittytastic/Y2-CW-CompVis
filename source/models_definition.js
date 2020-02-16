@@ -1,14 +1,14 @@
-function make_all_models(){
+function make_all_models(gl){
     let models = {}
 
-    models['box'] = make_box_model();
+    models['box'] = make_box_model(gl);
 
 
     return models
 }
 
 
-function make_box_model() {
+function make_box_model(gl) {
     // Create a cube
     //    v6----- v5
     //   /|      /|
@@ -59,5 +59,5 @@ function make_box_model() {
   
   
     
-    return new Basic3DModel(vertices,normals,colors,indices);
+    return new Basic3DModel(gl, vertices,normals,colors,indices);
   }
