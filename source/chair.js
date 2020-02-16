@@ -37,9 +37,7 @@ var FSHADER_SOURCE =
   '  gl_FragColor = v_Color;\n' +
   '}\n';
 
-var modelMatrix = new Matrix4(); // The model matrix
-var viewMatrix = new Matrix4();  // The view matrix
-var projMatrix = new Matrix4();  // The projection matrix
+
 var g_normalMatrix = new Matrix4();  // Coordinate transformation matrix for normals
 
 var ANGLE_STEP = 3.0;  // The increments of rotation angle (degrees)
@@ -111,6 +109,7 @@ function main() {
 
   
   // Set perspective
+  let projMatrix = new Matrix4();  
   projMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
   gl.uniformMatrix4fv(u_ProjMatrix, false, projMatrix.elements);
 
@@ -187,6 +186,56 @@ function keydown(ev, gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatr
 }
 
 
+function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
+
+  // Clear color and depth buffer
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  // Set camera
+  let viewMatrix = g_camera.make_view_matrix();
+  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
+
+  
+  draw_axis(u_isLighting, u_ModelMatrix);
+  
+
+  gl.uniform1i(u_isLighting, true); // Will apply lighting
+
+  
+  // Transform the chair
+  g_chair_x_transform.update(g_xAngle, 1, 0, 0);
+  g_chair_y_transform.update(g_yAngle, 0, 1, 0);
+  
+  // Draw scene
+  g_scene_graph.draw()
+
+}
+
+
+
+
+
+function draw_axis(u_isLighting, u_ModelMatrix){
+  gl.uniform1i(u_isLighting, false); // Will not apply lighting
+  
+  // Set the vertex coordinates and color (for the x, y axes)
+
+  var n = initAxesVertexBuffers(gl);
+  if (n < 0) {
+    console.log('Failed to set the vertex information');
+    return;
+  }
+
+  // Calculate the view matrix and the projection matrix
+  var modelMatrix = new Matrix4(); 
+  modelMatrix.setTranslate(0, 0, 0);  // No Translation
+  // Pass the model matrix to the uniform variable
+  gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
+
+  // Draw x and y axes
+  gl.drawArrays(gl.LINES, 0, n);
+}
+
 
 function initAxesVertexBuffers(gl) {
 
@@ -235,46 +284,4 @@ function initAxesVertexBuffers(gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
   return n;
-}
-
-
-function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isLighting, u_ViewMatrix) {
-
-  // Clear color and depth buffer
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  // Set camera
-  let viewMatrix = g_camera.make_view_matrix();
-  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMatrix.elements);
-
-  
-  
-  gl.uniform1i(u_isLighting, false); // Will not apply lighting
-  
-  // Set the vertex coordinates and color (for the x, y axes)
-
-  var n = initAxesVertexBuffers(gl);
-  if (n < 0) {
-    console.log('Failed to set the vertex information');
-    return;
-  }
-
-  // Calculate the view matrix and the projection matrix
-  modelMatrix.setTranslate(0, 0, 0);  // No Translation
-  // Pass the model matrix to the uniform variable
-  gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
-
-  // Draw x and y axes
-  gl.drawArrays(gl.LINES, 0, n);
-
-  gl.uniform1i(u_isLighting, true); // Will apply lighting
-
-  
-  // Transform the chair
-  g_chair_x_transform.update(g_xAngle, 1, 0, 0);
-  g_chair_y_transform.update(g_yAngle, 0, 1, 0);
-  
-  // Draw scene
-  g_scene_graph.draw()
-
 }
