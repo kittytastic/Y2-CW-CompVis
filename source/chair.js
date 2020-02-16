@@ -10,7 +10,9 @@ let g_camera;
 const MOVE_STEP = 0.5;
 const VIEW_ANGLE_STEP = 10; 
 
-const UNIFORMS = ['u_ModelMatrix', 'u_ViewMatrix', 'u_NormalMatrix', 'u_ProjMatrix', 'u_LightColor', 'u_LightDirection', 'u_isLighting']
+const UNIFORMS = ['u_ModelMatrix', 'u_ViewMatrix', 'u_NormalMatrix', 'u_ProjMatrix', 'u_LightColor', 'u_LightPosition'
+//, 'u_isLighting'
+]
 
 function main() {
   // Retrieve <canvas> element
@@ -56,9 +58,13 @@ function main() {
   gl.uniform3f(uniforms.u_LightColor, 1.0, 1.0, 1.0);
   
   // Set the light direction (in the world coordinate)
-  var lightDirection = new Vector3([0.5, 3.0, 4.0]);
-  lightDirection.normalize();     // Normalize
-  gl.uniform3fv(uniforms.u_LightDirection, lightDirection.elements);
+  //var lightDirection = new Vector3([0.5, 3.0, 4.0]);
+  //lightDirection.normalize();     // Normalize
+  //gl.uniform3fv(uniforms.u_LightDirection, lightDirection.elements);
+  var lightingPosition = new Vector3([0.0, 4.0, 4.0]);
+  //lightDirection.normalize();     // Normalize
+  gl.uniform3fv(uniforms.u_LightPosition, lightingPosition.elements);   
+
 
   
   // Set perspective
@@ -151,20 +157,20 @@ function draw(gl, uniforms) {
   gl.uniformMatrix4fv(uniforms.u_ViewMatrix, false, viewMatrix.elements);
 
   // Don't apply lighting
-  gl.uniform1i(uniforms.u_isLighting, false);
+  //gl.uniform1i(uniforms.u_isLighting, false);
   
   // Draw axis
   draw_axis(gl, uniforms);
   
   // Apply lighting
-  gl.uniform1i(uniforms.u_isLighting, true);
+  //gl.uniform1i(uniforms.u_isLighting, true);
 
   // Transform the chair
   g_chair_x_transform.update(g_xAngle, 1, 0, 0);
   g_chair_y_transform.update(g_yAngle, 0, 1, 0);
   
   // Draw scene
-  g_scene_graph.draw(gl, uniforms)
+  g_scene_graph.draw(gl, uniforms)    
 
 }
 
