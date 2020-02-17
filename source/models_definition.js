@@ -35,6 +35,15 @@ function make_box_model(gl) {
       1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0,     // v7-v4-v3-v2 down
       1, 0, 0,   1, 0, 0,   1, 0, 0,  1, 0, 0　    // v4-v7-v6-v5 back
    ]);
+
+   var texCoords = new Float32Array([
+      1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
+      0.0, 1.0, 0.0, 0,0, 1.0, 0.0, 1.0, 1.0,
+      1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
+      1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
+      0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+      0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0
+   ])
   
   
     var normals = new Float32Array([    // Normal
@@ -59,5 +68,6 @@ function make_box_model(gl) {
   
   
     
-    return new Basic3DModel(gl, vertices,normals,colors,indices);
+    //return new Basic3DModel(gl, vertices,normals,colors,indices);
+    return new Basic3DModel(gl, vertices,normals,texCoords,indices);
   }
