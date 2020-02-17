@@ -55,19 +55,28 @@ function main() {
 
 
   // Set the light color (white)
-  gl.uniform3f(uniforms.u_LightColor, 1.0, 1.0, 1.0);
+  //let lightingColor = new Float32Array([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
+  //gl.uniform3fv(uniforms.u_LightColor, lightingColor);
   let ambient = 0.1
-  gl.uniform3f(uniforms.u_AmbientLight, ambient, ambient, ambient);
+  //gl.uniform3f(uniforms.u_AmbientLight, ambient, ambient, ambient);
   //gl.uniform3f(uniforms.u_AmbientLight, 0.0, 0.0, 0.0);
   
   // Set the light direction (in the world coordinate)
   //var lightDirection = new Vector3([0.5, 3.0, 4.0]);
   //lightDirection.normalize();     // Normalize
   //gl.uniform3fv(uniforms.u_LightDirection, lightDirection.elements);
-  var lightingPosition = new Vector3([0.0, 4.0, 4.0]);
+  //var lightingPosition = new Float32Array([4.0, 0.0, 4.0, 0.0, 4.0, 4.0]);
   //lightDirection.normalize();     // Normalize
-  gl.uniform3fv(uniforms.u_LightPosition, lightingPosition.elements);   
+  //gl.uniform3fv(uniforms.u_LightPosition, lightingPosition);   
 
+  let lc = new LightingController(gl, uniforms);
+  lc.set_ambient(ambient, ambient, ambient);
+
+  lc._set_point_light_color(0, 1.0, 1.0, 1.0);
+  lc._set_point_light_position(0, 0, 4, 4);
+  
+  lc._set_point_light_color(1, 0.0, 0.0, 0.0);
+  lc._set_point_light_position(1, 0, 4, 4);
 
   
   // Set perspective
@@ -249,4 +258,67 @@ function initAxesVertexBuffers(gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
   return n;
+}
+
+
+class LightingController{
+  uniforms;
+  gl;
+  ambient = [0,0,0];
+  point_position;
+  point_color;
+
+
+    constructor(gl, uniforms){
+        this.uniforms = uniforms
+        this.gl = gl;
+        
+        let point_zeros = []
+        for(let i=0; i<MAX_POINT_LIGHTS; i++){
+          point_zeros.push(0.0);
+        }
+        this.point_position = point_zeros.splice()
+        this.point_color = point_zeros.splice()
+
+    }
+
+    set_ambient(r,g,b){
+      this.ambient = [r,g,b]
+      this.gl.uniform3f(this.uniforms.u_AmbientLight, r, g, b);
+    }
+
+    _set_point_light_position(light_id, x, y, z){
+      if(light_id>=MAX_POINT_LIGHTS){
+        console.log("Error: cannot set position on point light "+light_id+" as it is out of range");
+        return false;
+      }
+
+      let offset = 3*light_id;
+      this.point_position[offset] = x;
+      this.point_position[offset+1] = y;
+      this.point_position[offset+2] = z;
+      
+      this.gl.uniform3fv(this.uniforms.u_LightPosition, new Float32Array(this.point_position));
+    }
+
+    _set_point_light_color(light_id, r, g, b){
+      if(light_id>=MAX_POINT_LIGHTS){
+        console.log("Error: cannot set position on point light "+light_id+" as it is out of range");
+        return false;
+      }
+
+      let offset = 3*light_id;
+      this.point_color[offset] = r;
+      this.point_color[offset+1] = g;
+      this.point_color[offset+2] = b;
+      
+      this.gl.uniform3fv(this.uniforms.u_LightColor, new Float32Array(this.point_color));
+
+    }
+
+
+}
+
+class PointLight{
+
 }
