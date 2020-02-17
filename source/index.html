@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Chair</title>
+    <title>LR-Sim 2020</title>
   </head>
 
   <body onload="main()">
@@ -10,23 +10,28 @@
     Please use a browser that supports "canvas"
     </canvas>
 
+    <!-- Libraries -->
     <script src="../lib/webgl-utils.js"></script>
     <script src="../lib/webgl-debug.js"></script>
     <script src="../lib/cuon-utils.js"></script>
     <script src="../lib/cuon-matrix.js"></script>
 
+    <!-- Shaders -->
     <script src="/source/shaders.js"></script>
 
+    <!-- Class declarations -->
     <script src="/source/models_core.js"></script>
-    <script src="/source/scene_graph.js"></script>
+    <script src="/source/scene_graph_core.js"></script>
+    <script src="/source/transformation_core.js"></script>
+    <script src="/source/lighting_core.js"></script>
+    <script src="/source/camera.js"></script>
 
-
+    <!-- Object creation -->
     <script src="/source/scene_definition.js"></script>
     <script src="/source/models_definition.js"></script>
 
-    <script src="/source/camera.js"></script>
-    <script src="/source/lighting_core.js"></script>
-    <script src="/source/chair.js"></script>
+    <!-- Main program -->
+    <script src="/source/index.js"></script>
     
 
   </body>
