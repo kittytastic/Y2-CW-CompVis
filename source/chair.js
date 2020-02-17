@@ -10,7 +10,7 @@ let g_camera;
 const MOVE_STEP = 0.5;
 const VIEW_ANGLE_STEP = 10; 
 
-const UNIFORMS = ['u_ModelMatrix', 'u_ViewMatrix', 'u_NormalMatrix', 'u_ProjMatrix', 'u_LightColor', 'u_LightPosition', 'u_AmbientLight'
+const UNIFORMS = ['u_ModelMatrix', 'u_ViewMatrix', 'u_NormalMatrix', 'u_ProjMatrix', 'u_PointLightColor', 'u_PointLightPosition', 'u_AmbientLight'
 //, 'u_isLighting'
 ]
 
@@ -294,7 +294,7 @@ class LightingController{
       this.point_position[offset+1] = y;
       this.point_position[offset+2] = z;
       
-      this.gl.uniform3fv(this.uniforms.u_LightPosition, new Float32Array(this.point_position));
+      this.gl.uniform3fv(this.uniforms.u_PointLightPosition, new Float32Array(this.point_position));
     }
 
     _set_point_light_color(light_id, r, g, b){
@@ -308,7 +308,7 @@ class LightingController{
       this.point_color[offset+1] = g;
       this.point_color[offset+2] = b;
       
-      this.gl.uniform3fv(this.uniforms.u_LightColor, new Float32Array(this.point_color));
+      this.gl.uniform3fv(this.uniforms.u_PointLightColor, new Float32Array(this.point_color));
 
     }
 

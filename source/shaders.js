@@ -1,3 +1,7 @@
+var MAX_POINT_LIGHTS = 2
+
+
+
 // Vertex shader program
 var VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
@@ -14,66 +18,34 @@ var VSHADER_SOURCE =
   'uniform bool u_isLighting;\n' +
   'void main() {\n' +
   '  gl_Position = u_ProjMatrix * u_ViewMatrix * u_ModelMatrix * a_Position;\n' +
-  //'  if(u_isLighting)\n' + 
-  '  if(true)\n' + 
-  '  {\n' +
   '     v_Normal = normalize(vec3(u_NormalMatrix * a_Normal));\n' +
   '     v_Position = vec3(u_ModelMatrix * a_Position);\n' +
   '     v_Color = a_Color;\n' +
-  '}\n'+
-  '  else\n' +
-  '  {\n' +
-  '     v_Color = a_Color;\n' +
-  '  }\n' + 
   '}\n';
 
 // Fragment shader program
-/*var FSHADER_SOURCE =
-  '#ifdef GL_ES\n' +
-  'precision mediump float;\n' +
-  '#endif\n' +
-  'uniform vec3 u_LightColor;\n' +     // Light color
-  'uniform vec3 u_LightPosition;\n' + // Light direction (in the world coordinate, normalized)
-  'varying vec4 v_Color;\n' +
-  'varying vec3 v_Position;\n' +
-  'varying vec3 v_Normal;\n' +
-  'void main() {\n' +
-  '     vec3 normal = normalize(v_Normal);\n' +
-  '     vec3 lightDirection = normalize(u_LightPosition - v_Position);\n' +
-  '     float nDotL = max(dot(lightDirection, normal), 0.0);\n' +
-  // Calculate the color due to diffuse reflection
-'     vec3 diffuse = u_LightColor * v_Color.rgb * nDotL;\n' +
-//'     v_Color = vec4(diffuse, a_Color.a);\n' +  '  }\n' +
-
-  '  gl_FragColor = vec4(diffuse, v_Color.a);\n' +
-  '}\n';*/
-
-
-  /*https://stackoverflow.com/questions/30594511/webgl-fragment-shader-for-multiple-light-sources*/
-
-  var MAX_POINT_LIGHTS = 2
-
-  var FSHADER_SOURCE =
-  '#ifdef GL_ES\n' +
-  'precision mediump float;\n' +
-  '#endif\n' +
-  'uniform vec3 u_LightColor['+MAX_POINT_LIGHTS+'];\n' +     // Light color
-  'uniform vec3 u_LightPosition['+MAX_POINT_LIGHTS+'];\n' + // Light direction (in the world coordinate, normalized)
-  'uniform vec3 u_AmbientLight;\n' + 
-  'varying vec4 v_Color;\n' +
-  'varying vec3 v_Position;\n' +
-  'varying vec3 v_Normal;\n' +
-  'void main() {\n' +
-  '     vec3 normal = normalize(v_Normal);\n' +
-  '     vec3 diffuse = vec3(0.0,0.0,0.0);\n' +
-  '     for(int i=0; i<'+MAX_POINT_LIGHTS+'; i++){\n' +
-  
-  '     vec3 lightDirection = normalize(u_LightPosition[i] - v_Position);\n' +
-  '     float nDotL = max(dot(lightDirection, normal), 0.0);\n' +
-  // Calculate the color due to diffuse reflection
-'       diffuse += u_LightColor[i] * v_Color.rgb * nDotL;\n' +
+var FSHADER_SOURCE =
+'#ifdef GL_ES\n' +
+'precision mediump float;\n' +
+'#endif\n' +
+'uniform vec3 u_PointLightColor['+MAX_POINT_LIGHTS+'];\n' +   
+'uniform vec3 u_PointLightPosition['+MAX_POINT_LIGHTS+'];\n' +
+'uniform vec3 u_AmbientLight;\n' + 
+'varying vec4 v_Color;\n' +
+'varying vec3 v_Position;\n' +
+'varying vec3 v_Normal;\n' +
+'void main() {\n' +
+'     vec3 normal = normalize(v_Normal);\n' +
+'     vec3 diffuse = vec3(0.0,0.0,0.0);\n' +
+      // For each point light
+'     for(int i=0; i<'+MAX_POINT_LIGHTS+'; i++){\n' +
+'       vec3 lightDirection = normalize(u_PointLightPosition[i] - v_Position);\n' +
+'       float nDotL = max(dot(lightDirection, normal), 0.0);\n' +
+        // Calculate the color due to diffuse reflection
+'       diffuse += u_PointLightColor[i] * v_Color.rgb * nDotL;\n' +
 '     }\n' +
-'     vec3 ambient = u_AmbientLight * v_Color.rgb;\n' +
-//'     v_Color = vec4(diffuse, a_Color.a);\n' +  '  }\n' +
-  '  gl_FragColor = vec4(diffuse+ambient, v_Color.a);\n' +
-  '}\n';
+    // Calculate ambient lighting
+'   vec3 ambient = u_AmbientLight * v_Color.rgb;\n' +
+    // Colour is the sum of diffused and ambient
+'   gl_FragColor = vec4(diffuse+ambient, v_Color.a);\n' +
+' }\n';
