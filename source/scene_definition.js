@@ -1,15 +1,17 @@
-function make_scene(models, lighting_controller){
+function make_scene(models, textures, lighting_controller){
    
+    models['box'].texture = textures['wood'];
+
     let scene_graph = new SceneGraph("root")
 
     g_chair_y_transform = new Rotate(g_yAngle, 0, 1, 0);
     g_chair_x_transform = new Rotate(g_xAngle, 1, 0, 0);
 
-    let chair1 = make_light_chair(models, lighting_controller);
+    let chair1 = make_light_chair(models, textures, lighting_controller);
     chair1.add_transform(g_chair_x_transform);
     chair1.add_transform(g_chair_y_transform);
 
-    let chair2 = make_chair(models);
+    let chair2 = make_chair(models, textures);
     chair2.add_transform(new Translate(-5,0,0))
    
 
@@ -19,7 +21,7 @@ function make_scene(models, lighting_controller){
     return scene_graph;
 }
 
-function make_chair(models){
+function make_chair(models, textures){
     let chair = new SceneWrapperNode("Chair");
     
     let back = new SceneModelNode( "Back", models['box']);
@@ -57,7 +59,7 @@ function make_chair(models){
     return chair;
 }
 
-function make_light_chair(models, lighting_controller){
+function make_light_chair(models, textures, lighting_controller){
     let chair = new SceneWrapperNode("Chair");
 
 

@@ -62,14 +62,13 @@
 
 
   class Basic3DModel extends Model{
-    constructor(gl, vertices, normals, colors, indices, texture){
+    constructor(gl, vertices, normals, texture_coords, indices, texture){
         super();
         this.attributes = []
         this.has_error = false
         this.attributes.push(new Attribute(gl, 'a_Position', vertices, 3, gl.FLOAT));
-        //this.attributes.push(new Attribute(gl, 'a_Color', colors, 3, gl.FLOAT));
         this.attributes.push(new Attribute(gl, 'a_Normal', normals, 3, gl.FLOAT));
-        this.attributes.push(new Attribute(gl, 'a_TexCoords', colors, 2, gl.FLOAT));
+        this.attributes.push(new Attribute(gl, 'a_TexCoords', texture_coords, 2, gl.FLOAT));
         this.n = indices.length;
 
         this.texture = texture;
@@ -83,14 +82,13 @@
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-        //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
     }
 
     switch_to_me(gl){
       if(!this.has_error){
 
-      //this.texture.switch_to_me();
+      this.texture.switch_to_me();
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
 
       for(let i=0; i<this.attributes.length; i++){
