@@ -82,5 +82,12 @@ class LightingController{
     set_position(x, y, z){
       this.lc._set_point_light_position(this.id, x, y, z);
     }
-  
+
+  }
+
+  class Light{
+
+    draw(){
+      console.log("Error: please implement this method")
+    }
   }

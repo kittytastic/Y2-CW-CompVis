@@ -41,9 +41,14 @@ function make_chair(models){
     leg3.add_transform(new Translate(-0.75, -1, -0.75))
     leg3.add_transform(new Scale(0.5, 1.5, 0.5))
     
+
+    let light = new SceneLightingNode("Light");
     let leg4 = new SceneModelNode("Leg 4", models['box']);
     leg4.add_transform(new Translate(-0.75, -1, 0.75))
     leg4.add_transform(new Scale(0.5, 1.5, 0.5))
+    leg4.add_child(light)
+
+    
 
     chair.add_child(back)
     chair.add_child(seat)
@@ -51,6 +56,7 @@ function make_chair(models){
     chair.add_child(leg2)
     chair.add_child(leg3)
     chair.add_child(leg4)
+    
 
     return chair;
 }

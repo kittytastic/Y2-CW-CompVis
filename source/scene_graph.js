@@ -90,6 +90,7 @@ class SceneNode{
     children = [];
     transformations = [];
     has_error;
+    friendly_name;
     constructor(friendly_name){
         this.has_error = false;
         this.friendly_name = friendly_name;
@@ -166,12 +167,6 @@ class SceneGraph extends SceneNode{
 
 }
 
-class SceneLightingNode extends SceneNode{
-    constructor(friendly_name){
-        super(friendly_name)
-    }
-}
-
 // This is a node that has a model associated with it
 class SceneModelNode extends SceneNode{
     model;
@@ -184,7 +179,7 @@ class SceneModelNode extends SceneNode{
     _draw_self(model_matrix, gl, uniforms){
        
             if(!this.model){
-                console.log("Error: SceneModeNode '"+super.friendly_name+"' was given a bad model, cannot draw");
+                console.log("Error: SceneModeNode '"+this.friendly_name+"' was given a bad model, cannot draw");
                 super.set_error();
                 return;
             }
@@ -201,5 +196,23 @@ class SceneModelNode extends SceneNode{
             // Get the model to draw itself
             this.model.draw(gl);
     }
+
+}
+
+
+class SceneLightingNode extends SceneNode{
+    constructor(friendly_name, light){
+        super(friendly_name)
+    }
+
+    _draw_self(model_matrix, gl, uniforms){
+        let cords = new Vector4([0.0,0.0,0.0,1.0])
+        //console.log("Begining co-ords: "+cords.elements);
+        cords = model_matrix.multiplyVector4(cords);
+        console.log("New co-ords: "+cords.elements);
+        
+    }
+
+
 
 }
