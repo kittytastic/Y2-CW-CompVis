@@ -91,6 +91,7 @@ class SceneNode{
     transformations = [];
     has_error;
     friendly_name;
+    cached_model_matrix;
     constructor(friendly_name){
         this.has_error = false;
         this.friendly_name = friendly_name;
@@ -108,30 +109,57 @@ class SceneNode{
         this.has_error = true;
     }
 
-    draw(model_matrix, gl, uniforms){
-        if(!this.has_error){
-            this._apply_transformation(model_matrix)
-            this._draw_self(model_matrix, gl, uniforms);
-            this._draw_children(model_matrix, gl, uniforms);
-        }else{
-            console.log("Error: unable to draw object '"+this.friendly_name+"' as it has been marked as having an error");
-        }
-
-    }
-
     _apply_transformation(model_matrix){
         for(let i=0; i<this.transformations.length; i++){
             this.transformations[i].apply(model_matrix);
         }
     }
 
-    _draw_children(model_matrix, gl, uniforms){
+    predraw(model_matrix, gl, uniforms){
+        if(!this.has_error){
+            this._apply_transformation(model_matrix)
+            this._predraw_self(model_matrix, gl, uniforms);
+            this._predraw_children(model_matrix, gl, uniforms);
+
+            // Cache the model matrix so we don't have to recalculate on draw call
+            this.cached_model_matrix = model_matrix;
+            
+        } else{
+            console.log("Error: unable to complete predraw on object '"+this.friendly_name+"' as it has been marked as having an error");
+        }
+    }
+
+    _predraw_children(model_matrix, gl, uniforms){
         // Draw all of children
         for(let i=0; i<this.children.length; i++){
             // Give children fresh matrix that they can modify
             let fresh_matrix = new Matrix4(model_matrix);
             // Draw child
-            this.children[i].draw(fresh_matrix, gl, uniforms);
+            this.children[i].predraw(fresh_matrix, gl, uniforms);
+        }
+    }
+
+    // This function should have any operation that need to be done before vertices start getting drawn (e.g. placing lights)
+    _predraw_self(model_matrix, gl, uniforms){
+        // Do nothing, unless specified
+    }
+
+    draw(gl, uniforms){
+        if(!this.has_error){
+            this._draw_self(this.cached_model_matrix, gl, uniforms);
+            this._draw_children(gl, uniforms);
+
+            // Clear cached matrix (to make development error easier to catch)
+            this.cached_model_matrix = null;
+        }else{
+            console.log("Error: unable to draw object '"+this.friendly_name+"' as it has been marked as having an error");
+        }
+    }
+
+    _draw_children(gl, uniforms){
+        // Draw all of children
+        for(let i=0; i<this.children.length; i++){
+            this.children[i].draw(gl, uniforms);
         }
     }
 
@@ -162,7 +190,8 @@ class SceneGraph extends SceneNode{
     draw(gl, uniforms){
         let model_matrix = new Matrix4();
         model_matrix.setTranslate(0, 0, 0);
-        super._draw_children(model_matrix, gl, uniforms);
+        super._predraw_children(model_matrix, gl, uniforms);
+        super._draw_children(gl, uniforms);
     }
 
 }
@@ -207,7 +236,7 @@ class SceneLightingNode extends SceneNode{
         this.light = light;
     }
 
-    _draw_self(model_matrix, gl, uniforms){
+    _predraw_self(model_matrix, gl, uniforms){
         if(!this.light){
             console.log("Error: cannot draw light "+this.friendly_name+" as no light model has been provided");
             this.set_error()
@@ -221,6 +250,10 @@ class SceneLightingNode extends SceneNode{
         let y = cords.elements[1]
         let z = cords.elements[2]
         this.light.set_position(x,y,z);
+    }
+
+    _draw_self(model_matrix, gl, uniforms){
+
     }
 
 
