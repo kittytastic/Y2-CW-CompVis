@@ -201,16 +201,26 @@ class SceneModelNode extends SceneNode{
 
 
 class SceneLightingNode extends SceneNode{
+    light;
     constructor(friendly_name, light){
         super(friendly_name)
+        this.light = light;
     }
 
     _draw_self(model_matrix, gl, uniforms){
+        if(!this.light){
+            console.log("Error: cannot draw light "+this.friendly_name+" as no light model has been provided");
+            this.set_error()
+            return;
+        }
+
         let cords = new Vector4([0.0,0.0,0.0,1.0])
-        //console.log("Begining co-ords: "+cords.elements);
         cords = model_matrix.multiplyVector4(cords);
         console.log("New co-ords: "+cords.elements);
-        
+        let x = cords.elements[0]
+        let y = cords.elements[1]
+        let z = cords.elements[2]
+        this.light.set_position(x,y,z);
     }
 
 

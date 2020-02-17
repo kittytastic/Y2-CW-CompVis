@@ -85,9 +85,9 @@ class LightingController{
 
   }
 
-  class Light{
+  /*class Light{
 
     draw(){
       console.log("Error: please implement this method")
     }
-  }
+  }*/

@@ -1,11 +1,11 @@
-function make_scene(models){
+function make_scene(models, lighting_controller){
    
     let scene_graph = new SceneGraph("root")
 
     g_chair_y_transform = new Rotate(g_yAngle, 0, 1, 0);
     g_chair_x_transform = new Rotate(g_xAngle, 1, 0, 0);
 
-    let chair1 = make_chair(models);
+    let chair1 = make_light_chair(models, lighting_controller);
     chair1.add_transform(g_chair_x_transform);
     chair1.add_transform(g_chair_y_transform);
 
@@ -41,12 +41,56 @@ function make_chair(models){
     leg3.add_transform(new Translate(-0.75, -1, -0.75))
     leg3.add_transform(new Scale(0.5, 1.5, 0.5))
     
-
-    let light = new SceneLightingNode("Light");
     let leg4 = new SceneModelNode("Leg 4", models['box']);
     leg4.add_transform(new Translate(-0.75, -1, 0.75))
     leg4.add_transform(new Scale(0.5, 1.5, 0.5))
-    leg4.add_child(light)
+    
+
+    chair.add_child(back)
+    chair.add_child(seat)
+    chair.add_child(leg1)
+    chair.add_child(leg2)
+    chair.add_child(leg3)
+    chair.add_child(leg4)
+    
+
+    return chair;
+}
+
+function make_light_chair(models, lighting_controller){
+    let chair = new SceneWrapperNode("Chair");
+
+
+    let light = lighting_controller.get_point_light();
+    light.set_colour(1,1,1);
+
+    let light_node = new SceneLightingNode("Light", light);
+    light_node.add_transform(new Translate(1, 1, 1))
+
+    let back = new SceneModelNode( "Back", models['box']);
+    back.add_transform(new Translate(0, 1.25, -0.75))
+    back.add_transform(new Scale(2.0, 2.0, 0.5))
+    
+    let seat = new SceneModelNode("Seat", models['box']);
+    seat.add_transform(new Scale(2.0, 0.5, 2.0))
+    seat.add_child(light_node);
+
+
+    let leg1 = new SceneModelNode( "Leg 1", models['box']);
+    leg1.add_transform(new Translate(0.75, -1, -0.75))
+    leg1.add_transform(new Scale(0.5, 1.5, 0.5))
+
+    let leg2 = new SceneModelNode("Leg 2", models['box']);
+    leg2.add_transform(new Translate(0.75, -1, 0.75))
+    leg2.add_transform(new Scale(0.5, 1.5, 0.5))
+
+    let leg3 = new SceneModelNode("Leg 3", models['box']);
+    leg3.add_transform(new Translate(-0.75, -1, -0.75))
+    leg3.add_transform(new Scale(0.5, 1.5, 0.5))
+    
+    let leg4 = new SceneModelNode("Leg 4", models['box']);
+    leg4.add_transform(new Translate(-0.75, -1, 0.75))
+    leg4.add_transform(new Scale(0.5, 1.5, 0.5))
 
     
 

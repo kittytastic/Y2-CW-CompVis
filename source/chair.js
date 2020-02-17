@@ -59,18 +59,18 @@ function main() {
   let lc = new LightingController(gl, uniforms);
   
   // Set ambient Light
-  let ambient = 0.1  
+  let ambient = 0  
   lc.set_ambient(ambient, ambient, ambient);
 
   // Make 2 point lights
   let p1 = lc.get_point_light()
-  let p2 = lc.get_point_light();
+  //let p2 = lc.get_point_light();
 
-  p1.set_colour(1.0, 1.0, 1.0);
+  p1.set_colour(0.0, 0.0, 0.0);
   p1.set_position(0, 4, 4);
   
-  p2.set_colour(0.0, 0.0, 0.0);
-  p2.set_position(0, 4, 4);
+  //p2.set_colour(0.0, 0.0, 0.0);
+  //p2.set_position(0, 4, 4);
 
   
   // Set perspective
@@ -85,7 +85,7 @@ function main() {
   let models = make_all_models(gl);
  
   // Make scene graph
-  g_scene_graph = make_scene(models);
+  g_scene_graph = make_scene(models, lc);
 
   
   // Bind keydown listener
