@@ -57,29 +57,22 @@ function main() {
   }
 
 
-  // Set the light color (white)
-  //let lightingColor = new Float32Array([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
-  //gl.uniform3fv(uniforms.u_LightColor, lightingColor);
-  let ambient = 0.1
-  //gl.uniform3f(uniforms.u_AmbientLight, ambient, ambient, ambient);
-  //gl.uniform3f(uniforms.u_AmbientLight, 0.0, 0.0, 0.0);
-  
-  // Set the light direction (in the world coordinate)
-  //var lightDirection = new Vector3([0.5, 3.0, 4.0]);
-  //lightDirection.normalize();     // Normalize
-  //gl.uniform3fv(uniforms.u_LightDirection, lightDirection.elements);
-  //var lightingPosition = new Float32Array([4.0, 0.0, 4.0, 0.0, 4.0, 4.0]);
-  //lightDirection.normalize();     // Normalize
-  //gl.uniform3fv(uniforms.u_LightPosition, lightingPosition);   
-
+  // Create Lighting controller  
   let lc = new LightingController(gl, uniforms);
+  
+  // Set ambient Light
+  let ambient = 0.1  
   lc.set_ambient(ambient, ambient, ambient);
 
-  lc._set_point_light_color(0, 1.0, 1.0, 1.0);
-  lc._set_point_light_position(0, 0, 4, 4);
+  // Make 2 point lights
+  let p1 = lc.get_point_light()
+  let p2 = lc.get_point_light();
+
+  p1.set_colour(1.0, 1.0, 1.0);
+  p1.set_position(0, 4, 4);
   
-  lc._set_point_light_color(1, 0.0, 0.0, 0.0);
-  lc._set_point_light_position(1, 0, 4, 4);
+  p2.set_colour(0.0, 0.0, 0.0);
+  p2.set_position(0, 4, 4);
 
   
   // Set perspective
@@ -270,7 +263,7 @@ class LightingController{
   ambient = [0,0,0];
   point_position;
   point_color;
-
+  allocated_point_lights=0;
 
     constructor(gl, uniforms){
         this.uniforms = uniforms
@@ -319,9 +312,34 @@ class LightingController{
 
     }
 
+    get_point_light(){
+      if(this.allocated_point_lights<MAX_POINT_LIGHTS){
+        this.allocated_point_lights += 1
+        return new PointLight(this, this.allocated_point_lights-1);
+      }else{
+        console.log("Error: cannot make a new point light, there are no more left to be allocated!")
+        return false;
+      }
+
+    }
+
+
+
 
 }
 
 class PointLight{
+  constructor(lighting_controller, id){
+      this.lc = lighting_controller;
+      this.id = id;
+  }
+
+  set_colour(r,g,b){
+    this.lc._set_point_light_color(this.id, r, g, b);
+  }
+
+  set_position(x, y, z){
+    this.lc._set_point_light_position(this.id, x, y, z);
+  }
 
 }
