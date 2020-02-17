@@ -111,9 +111,11 @@ class SceneGraph extends SceneNode{
 // This is a node that has a model associated with it
 class SceneModelNode extends SceneNode{
     model;
-    constructor(friendly_name, model){
+    texture;
+    constructor(friendly_name, model, texture){
         super(friendly_name)
         this.model = model
+        this.texture = texture;
     }
 
 
@@ -124,6 +126,14 @@ class SceneModelNode extends SceneNode{
                 super.set_error();
                 return;
             }
+
+            if(!this.texture){
+                console.log("Error: SceneModeNode '"+this.friendly_name+"' was given a bad texture, cannot draw");
+                super.set_error();
+                return;
+            }
+
+            this.texture.switch_to_me();
 
             // Pass the model matrix to the uniform variable
             gl.uniformMatrix4fv(uniforms.u_ModelMatrix, false, model_matrix.elements);

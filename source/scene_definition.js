@@ -1,6 +1,4 @@
 function make_scene(models, textures, lighting_controller){
-   
-    models['box'].texture = textures['wood'];
 
     let scene_graph = new SceneGraph("root")
 
@@ -24,26 +22,26 @@ function make_scene(models, textures, lighting_controller){
 function make_chair(models, textures){
     let chair = new SceneWrapperNode("Chair");
     
-    let back = new SceneModelNode( "Back", models['box']);
+    let back = new SceneModelNode( "Back", models['box'], textures['dark_wood']);
     back.add_transform(new Translate(0, 1.25, -0.75))
     back.add_transform(new Scale(2.0, 2.0, 0.5))
     
-    let seat = new SceneModelNode("Seat", models['box']);
+    let seat = new SceneModelNode("Seat", models['box'], textures['dark_wood']);
     seat.add_transform(new Scale(2.0, 0.5, 2.0))
     
-    let leg1 = new SceneModelNode( "Leg 1", models['box']);
+    let leg1 = new SceneModelNode( "Leg 1", models['box'], textures['dark_wood']);
     leg1.add_transform(new Translate(0.75, -1, -0.75))
     leg1.add_transform(new Scale(0.5, 1.5, 0.5))
 
-    let leg2 = new SceneModelNode("Leg 2", models['box']);
+    let leg2 = new SceneModelNode("Leg 2", models['box'], textures['dark_wood']);
     leg2.add_transform(new Translate(0.75, -1, 0.75))
     leg2.add_transform(new Scale(0.5, 1.5, 0.5))
 
-    let leg3 = new SceneModelNode("Leg 3", models['box']);
+    let leg3 = new SceneModelNode("Leg 3", models['box'], textures['dark_wood']);
     leg3.add_transform(new Translate(-0.75, -1, -0.75))
     leg3.add_transform(new Scale(0.5, 1.5, 0.5))
     
-    let leg4 = new SceneModelNode("Leg 4", models['box']);
+    let leg4 = new SceneModelNode("Leg 4", models['box'], textures['dark_wood']);
     leg4.add_transform(new Translate(-0.75, -1, 0.75))
     leg4.add_transform(new Scale(0.5, 1.5, 0.5))
     
@@ -69,34 +67,35 @@ function make_light_chair(models, textures, lighting_controller){
     let light_node = new SceneLightingNode("Light", light);
     light_node.add_transform(new Translate(0, -2, 1))
 
-    let light_box = new SceneModelNode( "Light box", models['box']);
+    //let light_box = new SceneModelNode( "Light box", models['box'], textures['wood']);
+    let light_box = new SceneWrapperNode("Light box")
     light_box.add_transform(new Scale(0.5, 0.5, 0.5));
     light_box.add_transform(new Translate(0,2,1))
     light_box.add_child(light_node)
 
 
-    let back = new SceneModelNode( "Back", models['box']);
+    let back = new SceneModelNode( "Back", models['box'], textures['wood']);
     back.add_transform(new Translate(0, 1.25, -0.75))
     back.add_transform(new Scale(2.0, 2.0, 0.5))
     
-    let seat = new SceneModelNode("Seat", models['box']);
+    let seat = new SceneModelNode("Seat", models['box'], textures['wood']);
     seat.add_transform(new Scale(2.0, 0.5, 2.0))
     seat.add_child(light_box);
 
 
-    let leg1 = new SceneModelNode( "Leg 1", models['box']);
+    let leg1 = new SceneModelNode( "Leg 1", models['box'], textures['wood']);
     leg1.add_transform(new Translate(0.75, -1, -0.75))
     leg1.add_transform(new Scale(0.5, 1.5, 0.5))
 
-    let leg2 = new SceneModelNode("Leg 2", models['box']);
+    let leg2 = new SceneModelNode("Leg 2", models['box'], textures['wood']);
     leg2.add_transform(new Translate(0.75, -1, 0.75))
     leg2.add_transform(new Scale(0.5, 1.5, 0.5))
 
-    let leg3 = new SceneModelNode("Leg 3", models['box']);
+    let leg3 = new SceneModelNode("Leg 3", models['box'], textures['wood']);
     leg3.add_transform(new Translate(-0.75, -1, -0.75))
     leg3.add_transform(new Scale(0.5, 1.5, 0.5))
     
-    let leg4 = new SceneModelNode("Leg 4", models['box']);
+    let leg4 = new SceneModelNode("Leg 4", models['box'], textures['wood']);
     leg4.add_transform(new Translate(-0.75, -1, 0.75))
     leg4.add_transform(new Scale(0.5, 1.5, 0.5))
 

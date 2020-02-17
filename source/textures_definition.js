@@ -2,6 +2,8 @@ function make_all_textures(gl, uniforms){
     let textures = {}
 
     textures['wood'] =  new Texture(gl, uniforms, '../Textures/wood.png', 0);
+    textures['dark_wood'] =  new Texture(gl, uniforms, '../Textures/dark_wood.png', 0);
+
 
     return textures
 }
