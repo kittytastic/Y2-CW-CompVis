@@ -10,7 +10,7 @@ let g_camera;
 const MOVE_STEP = 0.5;
 const VIEW_ANGLE_STEP = 10; 
 
-const UNIFORMS = ['u_ModelMatrix', 'u_ViewMatrix', 'u_NormalMatrix', 'u_ProjMatrix', 'u_LightColor', 'u_LightPosition'
+const UNIFORMS = ['u_ModelMatrix', 'u_ViewMatrix', 'u_NormalMatrix', 'u_ProjMatrix', 'u_LightColor', 'u_LightPosition', 'u_AmbientLight'
 //, 'u_isLighting'
 ]
 
@@ -56,6 +56,9 @@ function main() {
 
   // Set the light color (white)
   gl.uniform3f(uniforms.u_LightColor, 1.0, 1.0, 1.0);
+  let ambient = 0.1
+  gl.uniform3f(uniforms.u_AmbientLight, ambient, ambient, ambient);
+  //gl.uniform3f(uniforms.u_AmbientLight, 0.0, 0.0, 0.0);
   
   // Set the light direction (in the world coordinate)
   //var lightDirection = new Vector3([0.5, 3.0, 4.0]);

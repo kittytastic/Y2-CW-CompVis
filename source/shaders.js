@@ -28,7 +28,7 @@ var VSHADER_SOURCE =
   '}\n';
 
 // Fragment shader program
-var FSHADER_SOURCE =
+/*var FSHADER_SOURCE =
   '#ifdef GL_ES\n' +
   'precision mediump float;\n' +
   '#endif\n' +
@@ -46,4 +46,29 @@ var FSHADER_SOURCE =
 //'     v_Color = vec4(diffuse, a_Color.a);\n' +  '  }\n' +
 
   '  gl_FragColor = vec4(diffuse, v_Color.a);\n' +
+  '}\n';*/
+
+
+  /*https://stackoverflow.com/questions/30594511/webgl-fragment-shader-for-multiple-light-sources*/
+
+
+  var FSHADER_SOURCE =
+  '#ifdef GL_ES\n' +
+  'precision mediump float;\n' +
+  '#endif\n' +
+  'uniform vec3 u_LightColor;\n' +     // Light color
+  'uniform vec3 u_LightPosition;\n' + // Light direction (in the world coordinate, normalized)
+  'uniform vec3 u_AmbientLight;\n' + 
+  'varying vec4 v_Color;\n' +
+  'varying vec3 v_Position;\n' +
+  'varying vec3 v_Normal;\n' +
+  'void main() {\n' +
+  '     vec3 normal = normalize(v_Normal);\n' +
+  '     vec3 lightDirection = normalize(u_LightPosition - v_Position);\n' +
+  '     float nDotL = max(dot(lightDirection, normal), 0.0);\n' +
+  // Calculate the color due to diffuse reflection
+'     vec3 diffuse = u_LightColor * v_Color.rgb * nDotL;\n' +
+'     vec3 ambient = u_AmbientLight * v_Color.rgb;\n' +
+//'     v_Color = vec4(diffuse, a_Color.a);\n' +  '  }\n' +
+  '  gl_FragColor = vec4(diffuse+ambient, v_Color.a);\n' +
   '}\n';
