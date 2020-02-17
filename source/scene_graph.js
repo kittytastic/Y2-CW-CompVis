@@ -89,12 +89,9 @@ class Scale extends Transform{
 class SceneNode{
     children = [];
     transformations = [];
-    model;
-    valid = true;
-    constructor(model, drawn, friendly_name){
-        this.valid = true;
-        this.model = model;
-        this.drawn = drawn;
+    has_error;
+    constructor(friendly_name){
+        this.has_error = false;
         this.friendly_name = friendly_name;
     }
 
@@ -106,13 +103,17 @@ class SceneNode{
         this.transformations.push(transform);
     }
 
+    set_error(){
+        this.has_error = true;
+    }
+
     draw(model_matrix, gl, uniforms){
-        if(this.valid){
+        if(!this.has_error){
             this._apply_transformation(model_matrix)
             this._draw_self(model_matrix, gl, uniforms);
             this._draw_children(model_matrix, gl, uniforms);
         }else{
-            console.log("Error: unable to draw object as it is invalid");
+            console.log("Error: unable to draw object '"+this.friendly_name+"' as it has been marked as having an error");
         }
 
     }
@@ -134,13 +135,60 @@ class SceneNode{
     }
 
     _draw_self(model_matrix, gl, uniforms){
-        if(this.drawn){
+        console.log("Error: please implement this method")
+    }
+}
 
-            
+// Wrapper node, use if you want a node that has children and transformations but no model associated with it
+class SceneWrapperNode extends SceneNode{
+    constructor(friendly_name){
+        super(friendly_name);
+    }
+
+    _draw_self(model_matrix, gl, uniforms){
+        // Do Nothing
+    }
+}
+
+// This should be used as a root node to the scene graph
+class SceneGraph extends SceneNode{
+  
+    constructor(friendly_name){
+        super(friendly_name)
+    }
+
+
+    draw(gl, uniforms){
+        let model_matrix = new Matrix4();
+        model_matrix.setTranslate(0, 0, 0);
+        super._draw_children(model_matrix, gl, uniforms);
+    }
+
+}
+
+class SceneLightingNode extends SceneNode{
+    constructor(friendly_name){
+        super(friendly_name)
+    }
+}
+
+// This is a node that has a model associated with it
+class SceneModelNode extends SceneNode{
+    model;
+    constructor(friendly_name, model){
+        super(friendly_name)
+        this.model = model
+    }
+
+
+    _draw_self(model_matrix, gl, uniforms){
+       
             if(!this.model){
-                console.log("Error: Scene node given a bad model, cannot draw");
+                console.log("Error: SceneModeNode '"+super.friendly_name+"' was given a bad model, cannot draw");
+                super.set_error();
                 return;
             }
+
             // Pass the model matrix to the uniform variable
             gl.uniformMatrix4fv(uniforms.u_ModelMatrix, false, model_matrix.elements);
 
@@ -150,27 +198,8 @@ class SceneNode{
             normalMatrix.transpose();
             gl.uniformMatrix4fv(uniforms.u_NormalMatrix, false, normalMatrix.elements);
 
+            // Get the model to draw itself
             this.model.draw(gl);
-        }
     }
-}
-
-class SceneGraph extends SceneNode{
-  
-    constructor(friendly_name){
-        super()
-        this.friendly_name = friendly_name
-    }
-
-
-    draw(gl, uniforms){
-        let model_matrix = new Matrix4();
-        model_matrix.setTranslate(0, 0, 0);
-
-        super._draw_children(model_matrix, gl, uniforms);
-        
-
-    }
-
 
 }

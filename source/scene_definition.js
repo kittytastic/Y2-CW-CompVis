@@ -20,28 +20,28 @@ function make_scene(models){
 }
 
 function make_chair(models){
-    let chair = new SceneNode(null, false, "Chair");
+    let chair = new SceneWrapperNode("Chair");
     
-    let back = new SceneNode(models['box'], true, "Back");
+    let back = new SceneModelNode( "Back", models['box']);
     back.add_transform(new Translate(0, 1.25, -0.75))
     back.add_transform(new Scale(2.0, 2.0, 0.5))
     
-    let seat = new SceneNode(models['box'], true, "Seat");
+    let seat = new SceneModelNode("Seat", models['box']);
     seat.add_transform(new Scale(2.0, 0.5, 2.0))
     
-    let leg1 = new SceneNode(models['box'], true, "Leg 1");
+    let leg1 = new SceneModelNode( "Leg 1", models['box']);
     leg1.add_transform(new Translate(0.75, -1, -0.75))
     leg1.add_transform(new Scale(0.5, 1.5, 0.5))
 
-    let leg2 = new SceneNode(models['box'], true, "Leg 2");
+    let leg2 = new SceneModelNode("Leg 2", models['box']);
     leg2.add_transform(new Translate(0.75, -1, 0.75))
     leg2.add_transform(new Scale(0.5, 1.5, 0.5))
 
-    let leg3 = new SceneNode(models['box'], true, "Leg 3");
+    let leg3 = new SceneModelNode("Leg 3", models['box']);
     leg3.add_transform(new Translate(-0.75, -1, -0.75))
     leg3.add_transform(new Scale(0.5, 1.5, 0.5))
     
-    let leg4 = new SceneNode(models['box'], true, "Leg 4");
+    let leg4 = new SceneModelNode("Leg 4", models['box']);
     leg4.add_transform(new Translate(-0.75, -1, 0.75))
     leg4.add_transform(new Scale(0.5, 1.5, 0.5))
 
