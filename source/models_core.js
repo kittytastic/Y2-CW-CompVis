@@ -69,7 +69,7 @@
         this.attributes.push(new Attribute(gl, 'a_Position', vertices, 3, gl.FLOAT));
         //this.attributes.push(new Attribute(gl, 'a_Color', colors, 3, gl.FLOAT));
         this.attributes.push(new Attribute(gl, 'a_Normal', normals, 3, gl.FLOAT));
-        this.attributes.push(new Attribute(gl, 'a_TexCoords', colors, 3, gl.FLOAT));
+        this.attributes.push(new Attribute(gl, 'a_TexCoords', colors, 2, gl.FLOAT));
         this.n = indices.length;
 
         this.texture = texture;
