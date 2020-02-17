@@ -59,7 +59,7 @@ function main() {
   let lc = new LightingController(gl, uniforms);
   
   // Set ambient Light
-  let ambient = 0  
+  let ambient = 0.1  
   lc.set_ambient(ambient, ambient, ambient);
 
   // Make 2 point lights

@@ -65,7 +65,13 @@ function make_light_chair(models, lighting_controller){
     light.set_colour(1,1,1);
 
     let light_node = new SceneLightingNode("Light", light);
-    light_node.add_transform(new Translate(1, 1, 1))
+    light_node.add_transform(new Translate(0, -2, 1))
+
+    let light_box = new SceneModelNode( "Light box", models['box']);
+    light_box.add_transform(new Scale(0.5, 0.5, 0.5));
+    light_box.add_transform(new Translate(0,2,1))
+    light_box.add_child(light_node)
+
 
     let back = new SceneModelNode( "Back", models['box']);
     back.add_transform(new Translate(0, 1.25, -0.75))
@@ -73,7 +79,7 @@ function make_light_chair(models, lighting_controller){
     
     let seat = new SceneModelNode("Seat", models['box']);
     seat.add_transform(new Scale(2.0, 0.5, 2.0))
-    seat.add_child(light_node);
+    seat.add_child(light_box);
 
 
     let leg1 = new SceneModelNode( "Leg 1", models['box']);

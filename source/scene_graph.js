@@ -216,7 +216,7 @@ class SceneLightingNode extends SceneNode{
 
         let cords = new Vector4([0.0,0.0,0.0,1.0])
         cords = model_matrix.multiplyVector4(cords);
-        console.log("New co-ords: "+cords.elements);
+        //console.log("New co-ords: "+cords.elements);
         let x = cords.elements[0]
         let y = cords.elements[1]
         let z = cords.elements[2]
