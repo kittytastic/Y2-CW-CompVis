@@ -64,6 +64,10 @@ class Texture{
       // Bind the texture to texture unit 0
       this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
   
+      //this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT);
+      //this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT);
+
+
       // Tell the shader we bound the texture to texture unit 0
       this.gl.uniform1i(this.uniforms.u_Sampler, 0);
   
@@ -105,6 +109,7 @@ class Texture{
       // vs non power of 2 images so check if the image is a
       // power of 2 in both dimensions.
       if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+          console.log("Mip mapping")
          // Yes, it's a power of 2. Generate mips.
          gl.generateMipmap(gl.TEXTURE_2D);
       } else {

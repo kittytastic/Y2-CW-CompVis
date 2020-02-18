@@ -69,7 +69,7 @@ function make_light_chair(models, textures, lighting_controller){
 
     //let light_box = new SceneModelNode( "Light box", models['box'], textures['wood']);
     let light_box = new SceneWrapperNode("Light box")
-    light_box.add_transform(new Scale(0.5, 0.5, 0.5));
+    light_box.add_transform(new Scale(0.5, 1.5, 0.5));
     light_box.add_transform(new Translate(0,2,1))
     light_box.add_child(light_node)
 

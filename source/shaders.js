@@ -58,5 +58,5 @@ var FSHADER_SOURCE =
 //'   vec3 ambient = u_AmbientLight * v_Color.rgb;\n' +
 '   vec3 ambient = u_AmbientLight * TexColor.rgb;\n' +
     // Colour is the sum of diffused and ambient
-'   gl_FragColor = vec4(diffuse+ambient, v_Color.a);\n' +
+'   gl_FragColor = vec4(diffuse+ambient, 1);\n' +
 ' }\n';
