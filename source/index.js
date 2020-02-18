@@ -1,3 +1,5 @@
+const DEBUG = false
+
 const ANGLE_STEP = 3.0;  // The increments of rotation angle (degrees)
 var g_xAngle = 0.0;    // The rotation x angle (degrees)
 var g_yAngle = 0.0;    // The rotation y angle (degrees)
@@ -19,7 +21,7 @@ function main() {
   var canvas = document.getElementById('webgl');
 
   // Get the rendering context for WebGL
-  let gl = getWebGLContext(canvas);
+  let gl = getWebGLContext(canvas, DEBUG);
   if (!gl) {
     console.log('Error: Failed to get the rendering context for WebGL');
     return;
