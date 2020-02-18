@@ -88,7 +88,11 @@ function main() {
   
   // Bind keydown listener
   document.onkeydown = function(ev){
-    keydown(ev, gl, uniforms);
+    keydown(ev);
+  };
+
+  document.onkeyup = function(ev){
+    key_up(ev);
   };
 
 
@@ -110,56 +114,111 @@ function main() {
 }
 
 
+let g_key_down_time = {}
+let g_currently_down = {}
 
-  
+let key_press_queue = []
+
+function keydown(ev){
+  if(!g_currently_down[ev.key]){
+    //console.log("Key down: "+ev.key);
+    g_currently_down[ev.key] = true;
+    g_key_down_time[ev.key] = new Date()
+  }
+}
+
+function key_up(ev){
+  //console.log("Key up: "+ev.key)
+  let now = new Date;
+  g_currently_down[ev.key] = false
+  let dur = now - g_key_down_time[ev.key]
+  key_press_queue.push({key: ev.key, time:dur});
+}
 
 
-function keydown(ev, gl, uniforms) {
-  switch (ev.key) {
+function do_key_actions(){
+    let now = new Date()
+
+    for(key in g_currently_down){
+      if(g_currently_down[key]){
+        //console.log("cd loop")
+        let dt = now - g_key_down_time[key];
+        key_action(key, dt)
+        g_key_down_time[key] = now;
+      }
+    }
+
+    for(let i=0; i<key_press_queue.length; i++){
+      //console.log("finished lp")
+      let k = key_press_queue[i]
+      key_action(k.key, k.time)
+    }
+
+    key_press_queue = [];
+}
+
+
+let ANGLE_PER_SECOND = 360
+let MOVE_PER_SECOND = 3;
+let TURN_ANGLE_PER_SECOND = 60;
+
+function key_action(key, deltaTime) {
+  deltaTime *= 0.001;
+  if(!key){
+    console.log("Error")
+  }
+
+  if(!deltaTime){
+    console.log("Error")
+  }
+
+  //console.log("dt: ", deltaTime)
+
+  switch (key) {
     case 'ArrowUp': 
-      g_xAngle = (g_xAngle + ANGLE_STEP) % 360;
+      g_xAngle = (g_xAngle + ANGLE_PER_SECOND*deltaTime) % 360;
       break;
     case 'ArrowDown': 
-      g_xAngle = (g_xAngle - ANGLE_STEP) % 360;
+      g_xAngle = (g_xAngle - ANGLE_PER_SECOND*deltaTime) % 360;
       break;
     case 'ArrowRight':
-      g_yAngle = (g_yAngle + ANGLE_STEP) % 360;
+      g_yAngle = (g_yAngle + ANGLE_PER_SECOND*deltaTime) % 360;
       break;
     case 'ArrowLeft':
-      g_yAngle = (g_yAngle - ANGLE_STEP) % 360;
+      g_yAngle = (g_yAngle - ANGLE_PER_SECOND*deltaTime) % 360;
       break;
     case 'w':
-        g_camera.move_forwards(MOVE_STEP);
+        g_camera.move_forwards(MOVE_PER_SECOND*deltaTime);
         break;
     case 's':
-        g_camera.move_backwards(MOVE_STEP);
+        g_camera.move_backwards(MOVE_PER_SECOND*deltaTime);
         break;
     case 'd':
-        g_camera.move_left(MOVE_STEP);
+        g_camera.move_left(MOVE_PER_SECOND*deltaTime);
         break;
     case 'a':
-        g_camera.move_right(MOVE_STEP);
+        g_camera.move_right(MOVE_PER_SECOND*deltaTime);
         break;
     case 'z':
-        g_camera.move_up(MOVE_STEP); 
+        g_camera.move_up(MOVE_PER_SECOND*deltaTime); 
         break;
     case 'c':
-        g_camera.move_down(MOVE_STEP); 
+        g_camera.move_down(MOVE_PER_SECOND*deltaTime); 
         break;
     case 'u':
-        g_camera.look_up(VIEW_ANGLE_STEP);
+        g_camera.look_up(TURN_ANGLE_PER_SECOND*deltaTime);
         break;
     case 'j':
-        g_camera.look_down(VIEW_ANGLE_STEP);
+        g_camera.look_down(TURN_ANGLE_PER_SECOND*deltaTime);
         break;
     case 'h':
-        g_camera.look_left(VIEW_ANGLE_STEP);
+        g_camera.look_left(TURN_ANGLE_PER_SECOND*deltaTime);
         break;
     case 'k':
-       g_camera.look_right(VIEW_ANGLE_STEP);
+       g_camera.look_right(TURN_ANGLE_PER_SECOND*deltaTime);
         break;
     default: 
-        console.log('Key was pressed: '+ev.keyCode)
+        console.log('Key was pressed: '+key)
     return; // Skip drawing at no effective action
   }
 
@@ -170,6 +229,7 @@ function keydown(ev, gl, uniforms) {
 
 
 function draw(gl, uniforms, deltaTime) {
+  do_key_actions()
 
   // Clear color and depth buffer
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
