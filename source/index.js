@@ -62,9 +62,12 @@ function main() {
     }
   }
 
+  // Set perspective
+  let projMatrix = new Matrix4();  
+  projMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
+  gl.uniformMatrix4fv(uniforms.u_ProjMatrix, false, projMatrix.elements);
 
- 
-  
+
 
   // Create Lighting controller  
   let lc = new LightingController(gl, uniforms);
@@ -73,37 +76,35 @@ function main() {
   let ambient = 0.3 
   lc.set_ambient(ambient, ambient, ambient);
   
-  // Set perspective
-  let projMatrix = new Matrix4();  
-  projMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
-  gl.uniformMatrix4fv(uniforms.u_ProjMatrix, false, projMatrix.elements);
-
+  
   // Initialise camera
   g_camera = new Camera(0,0,15,0,0);
-
-  g_keyboard_controller = new KeyboardController();
-  set_binding(g_keyboard_controller);
 
   // Make 3D models
   let models = make_all_models(gl);
  
+  // Make textures
   let textures = make_all_textures(gl, uniforms);
 
   // Make scene graph
   g_scene_graph = make_scene(models, textures, lc);
 
+  // Set keyboard actions
+  g_keyboard_controller = new KeyboardController();
+  set_binding(g_keyboard_controller);
   
+  start_render_loop(gl, uniforms);
+}
 
 
-
-  
-  // Start render loop
-  var g_last_frame = new Date();
+// Start render loop
+function start_render_loop(gl, uniforms){
+  var last_frame_time = new Date();
 
   function render(now) {
     //if(!g_last_frame) g_last_frame = now
-    const deltaTime = now - g_last_frame;
-    g_last_frame = now;
+    const deltaTime = now - last_frame_time;
+    last_frame_time = now;
 
     draw(gl, uniforms, deltaTime);
 
@@ -112,7 +113,6 @@ function main() {
 
   requestAnimationFrame(render);
 }
-
 
 
 
@@ -233,8 +233,8 @@ function set_binding(kb_controller){
   kb_controller.add_action('s', (dt)=>{g_camera.move_backwards(KB_MOVE_PS*dt);});
   kb_controller.add_action('d', (dt)=>{g_camera.move_left(KB_MOVE_PS*dt);});
   kb_controller.add_action('a', (dt)=>{g_camera.move_right(KB_MOVE_PS*dt);});
-  kb_controller.add_action('z', (dt)=>{g_camera.move_up(KB_MOVE_PS*dt);});
-  kb_controller.add_action('c', (dt)=>{g_camera.move_down(KB_MOVE_PS*dt);});
+  kb_controller.add_action(' ', (dt)=>{g_camera.move_up(KB_MOVE_PS*dt);});
+  kb_controller.add_action('Shift', (dt)=>{g_camera.move_down(KB_MOVE_PS*dt);});
   
   // Camera angle
   kb_controller.add_action('u', (dt)=>{g_camera.look_up(KB_TURN_ANGLE_PS*dt);});
