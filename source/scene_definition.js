@@ -14,25 +14,25 @@ function make_scene(models, textures, lighting_controller){
     spin_ani.set_function(rotate_x);
     spin_ani.set_state({rot:0});
 
-    let spin_ani2 = new Animation("Spin");
-    spin_ani2.set_function(rotate_rev_x);
-    spin_ani2.set_state({rot:0});
+   
 
 
     let chair2 = make_chair(models, textures);
     chair2.add_transform(new Translate(-5,0,0))
-   
-    spin_ani.add_child(chair2);
-    spin_ani2.add_child(chair1)
+    chair2.add_animation(spin_ani)
 
     scene_graph.add_child(chair1)
-    scene_graph.add_child(spin_ani)
+    scene_graph.add_child(chair2)
 
     return scene_graph;
 }
 
 function make_chair(models, textures){
     let chair = new SceneWrapperNode("Chair");
+
+    let spin_ani2 = new Animation("Spin");
+    spin_ani2.set_function(rotate_rev_x);
+    spin_ani2.set_state({rot:0});
     
     let back = new SceneModelNode( "Back", models['box'], textures['dark_wood']);
     back.add_transform(new Translate(0, 1.25, -0.75))
@@ -44,18 +44,22 @@ function make_chair(models, textures){
     let leg1 = new SceneModelNode( "Leg 1", models['box'], textures['dark_wood']);
     leg1.add_transform(new Translate(0.75, -1, -0.75))
     leg1.add_transform(new Scale(0.5, 1.5, 0.5))
+    leg1.add_animation(spin_ani2)
 
     let leg2 = new SceneModelNode("Leg 2", models['box'], textures['dark_wood']);
     leg2.add_transform(new Translate(0.75, -1, 0.75))
     leg2.add_transform(new Scale(0.5, 1.5, 0.5))
+    leg2.add_animation(spin_ani2)
 
     let leg3 = new SceneModelNode("Leg 3", models['box'], textures['dark_wood']);
     leg3.add_transform(new Translate(-0.75, -1, -0.75))
     leg3.add_transform(new Scale(0.5, 1.5, 0.5))
+    leg3.add_animation(spin_ani2)
     
     let leg4 = new SceneModelNode("Leg 4", models['box'], textures['dark_wood']);
     leg4.add_transform(new Translate(-0.75, -1, 0.75))
     leg4.add_transform(new Scale(0.5, 1.5, 0.5))
+    leg4.add_animation(spin_ani2)
     
 
     chair.add_child(back)
@@ -130,7 +134,7 @@ function rotate_x(model_matrix, deltaTime, prevState){
 
     //console.log(deltaTime)
     if(!deltaTime){
-        console.log("Error")
+        console.log("Error: bad time value given to animation")
     }
    
     deltaTime *= 0.001;
@@ -148,7 +152,7 @@ function rotate_rev_x(model_matrix, deltaTime, prevState){
     }
    
     deltaTime *= 0.001;
-    let rot = prevState.rot - AN_ROTATE_SPEED * deltaTime
-    model_matrix.rotate(rot, 0, 1, 0);
+    let rot = prevState.rot - AN_ROTATE_SPEED * 1 * deltaTime
+    model_matrix.rotate(rot, 0, 0, 1);
     return {...prevState, rot: rot}
 }

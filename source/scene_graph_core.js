@@ -1,6 +1,7 @@
 class SceneNode{
     children = [];
     transformations = [];
+    animations = [];
     has_error;
     friendly_name;
     cached_model_matrix;
@@ -17,6 +18,10 @@ class SceneNode{
         this.transformations.push(transform);
     }
 
+    add_animation(animation){
+        this.animations.push(animation);
+    }
+
     set_error(){
         this.has_error = true;
     }
@@ -27,9 +32,17 @@ class SceneNode{
         }
     }
 
+    _apply_animations(model_matrix, deltaTime){
+        for(let i=0; i<this.animations.length; i++){
+            this.animations[i].apply(model_matrix, deltaTime);
+        }
+    }
+
     predraw(model_matrix, gl, uniforms, deltaTime){
         if(!this.has_error){
+            
             this._apply_transformation(model_matrix)
+            this._apply_animations(model_matrix, deltaTime)
             this._predraw_self(model_matrix, gl, uniforms, deltaTime);
             this._predraw_children(model_matrix, gl, uniforms, deltaTime);
 
@@ -182,11 +195,11 @@ class SceneLightingNode extends SceneNode{
 
 
 
-class Animation extends SceneNode{
+class Animation{
     animation_function;
   
     constructor(friendly_name){
-        super(friendly_name);
+       this.friendly_name = friendly_name;
     }
   
     set_function(animation_function){
@@ -197,13 +210,11 @@ class Animation extends SceneNode{
         this.state = state
     }
   
-    _predraw_self(model_matrix, gl, uniforms, deltaTime){
+    apply(model_matrix, deltaTime){
       if(!this.animation_function){
         console.log("Error: Unable to apply animation "+this.friendly_name+" as no animation function has been provided");
       }else{
         this.state = this.animation_function(model_matrix, deltaTime, this.state);
       }
     }
-
-    _draw_self(){}
   }
