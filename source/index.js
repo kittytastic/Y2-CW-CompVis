@@ -68,17 +68,6 @@ function main() {
   // Set ambient Light
   let ambient = 0.3 
   lc.set_ambient(ambient, ambient, ambient);
-
-  // Make 2 point lights
-  let p1 = lc.get_point_light()
-  //let p2 = lc.get_point_light();
-
-  p1.set_colour(0.0, 0.0, 0.0);
-  p1.set_position(0, 4, 4);
-  
-  //p2.set_colour(0.0, 0.0, 0.0);
-  //p2.set_position(0, 4, 4);
-
   
   // Set perspective
   let projMatrix = new Matrix4();  

@@ -2,10 +2,6 @@ function make_all_textures(gl, uniforms){
     let textures = {}
     let tc = new TextureController(gl, uniforms)
 
-
-    /*textures['wood'] =  new Texture(gl, uniforms, '../Textures/wood.png', 0);
-    textures['dark_wood'] =  new Texture(gl, uniforms, '../Textures/dark_wood.png', 0);*/
-
     textures['wood'] =  tc.make_texture('../Textures/wood.png');
     textures['dark_wood'] =  tc.make_texture('../Textures/dark_wood.png');
 
@@ -41,42 +37,11 @@ class Texture{
       this.gl = gl
       this.uniforms = uniforms
       this.texture_id = texture_id;
-      /*this.img = new Image();
-      this.img.onload = this._create_texture.bind(this);
-      this.img_loaded = false*/
       this.texture = loadTexture(gl, img_url, texture_id)
     }
   
-    /*_create_initial_texture(){
-  
-    }
-  
-    _create_texture(){
-      //this.gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, )
-  
-      this.gl.activeTexture(gl.TEXTURE0)
-      this.gl.bindTexture(gl.TEXTURE_2D, this.img);
-  
-      this.gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB)
-  
-  
-      this.img_loaded = true;
-    }*/
-  
     switch_to_me(){
-  
-      // Tell WebGL we want to affect texture unit 0
-      //this.gl.activeTexture(this.gl.TEXTURE0);
-  
-      // Bind the texture to texture unit 0
-      //this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-  
-      //this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT);
-      //this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT);
-
-
-      // Tell the shader we bound the texture to texture unit 0
-      //this.gl.uniform1i(this.uniforms.u_Sampler, 0);
+      // Tell the shader which texture unit to use
       this.gl.uniform1i(this.uniforms.u_Sampler, this.texture_id);
   
     }
