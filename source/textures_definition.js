@@ -4,8 +4,7 @@ function make_all_textures(gl, uniforms){
 
     textures['wood'] =  tc.make_texture('../Textures/wood.png');
     textures['dark_wood'] =  tc.make_texture('../Textures/dark_wood.png');
-
-
+    textures['diamond'] =  tc.make_texture('../Textures/diamond.png');
 
 
     return textures
@@ -86,7 +85,6 @@ class Texture{
       // vs non power of 2 images so check if the image is a
       // power of 2 in both dimensions.
       if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-          console.log("Mip mapping")
          // Yes, it's a power of 2. Generate mips.
          gl.generateMipmap(gl.TEXTURE_2D);
       } else {

@@ -91,9 +91,27 @@ function main() {
     keydown(ev, gl, uniforms);
   };
 
-  // Draw first frame
-  draw(gl, uniforms);
+
+  
+  // Start render loop
+  var g_last_frame = new Date();
+
+  function render(now) {
+    //if(!g_last_frame) g_last_frame = now
+    const deltaTime = now - g_last_frame;
+    g_last_frame = now;
+
+    draw(gl, uniforms, deltaTime);
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
 }
+
+
+
+  
 
 
 function keydown(ev, gl, uniforms) {
@@ -147,11 +165,11 @@ function keydown(ev, gl, uniforms) {
 
 
   // Draw the scene
-  draw(gl, uniforms);
+  //draw(gl, uniforms);
 }
 
 
-function draw(gl, uniforms) {
+function draw(gl, uniforms, deltaTime) {
 
   // Clear color and depth buffer
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
