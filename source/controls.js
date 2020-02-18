@@ -23,7 +23,7 @@ class KeyboardController{
       }
       
       _keyup(ev){
-        let now = new Date;
+        let now = new Date();
         this.currently_down[ev.key] = false
         let dur = now - this.key_down_time[ev.key]
         this.key_press_queue.push({key: ev.key, time:dur});

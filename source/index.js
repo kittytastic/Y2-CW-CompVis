@@ -141,7 +141,7 @@ function draw(gl, uniforms, deltaTime) {
   g_chair_y_transform.update(g_yAngle, 0, 1, 0);
   
   // Draw scene
-  g_scene_graph.draw(gl, uniforms)    
+  g_scene_graph.draw(gl, uniforms, deltaTime)    
 
 }
 

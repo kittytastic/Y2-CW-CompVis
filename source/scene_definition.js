@@ -9,12 +9,24 @@ function make_scene(models, textures, lighting_controller){
     chair1.add_transform(g_chair_x_transform);
     chair1.add_transform(g_chair_y_transform);
 
+
+    let spin_ani = new Animation("Spin");
+    spin_ani.set_function(rotate_x);
+    spin_ani.set_state({rot:0});
+
+    let spin_ani2 = new Animation("Spin");
+    spin_ani2.set_function(rotate_rev_x);
+    spin_ani2.set_state({rot:0});
+
+
     let chair2 = make_chair(models, textures);
     chair2.add_transform(new Translate(-5,0,0))
    
+    spin_ani.add_child(chair2);
+    spin_ani2.add_child(chair1)
 
     scene_graph.add_child(chair1)
-    scene_graph.add_child(chair2)
+    scene_graph.add_child(spin_ani)
 
     return scene_graph;
 }
@@ -110,4 +122,33 @@ function make_light_chair(models, textures, lighting_controller){
     
 
     return chair;
+}
+
+let AN_ROTATE_SPEED = 30;
+function rotate_x(model_matrix, deltaTime, prevState){
+
+
+    //console.log(deltaTime)
+    if(!deltaTime){
+        console.log("Error")
+    }
+   
+    deltaTime *= 0.001;
+    let rot = prevState.rot + AN_ROTATE_SPEED * deltaTime
+    model_matrix.rotate(rot, 0, 1, 0);
+    return {...prevState, rot: rot}
+}
+
+function rotate_rev_x(model_matrix, deltaTime, prevState){
+
+
+    //console.log(deltaTime)
+    if(!deltaTime){
+        console.log("Error")
+    }
+   
+    deltaTime *= 0.001;
+    let rot = prevState.rot - AN_ROTATE_SPEED * deltaTime
+    model_matrix.rotate(rot, 0, 1, 0);
+    return {...prevState, rot: rot}
 }

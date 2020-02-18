@@ -27,11 +27,11 @@ class SceneNode{
         }
     }
 
-    predraw(model_matrix, gl, uniforms){
+    predraw(model_matrix, gl, uniforms, deltaTime){
         if(!this.has_error){
             this._apply_transformation(model_matrix)
-            this._predraw_self(model_matrix, gl, uniforms);
-            this._predraw_children(model_matrix, gl, uniforms);
+            this._predraw_self(model_matrix, gl, uniforms, deltaTime);
+            this._predraw_children(model_matrix, gl, uniforms, deltaTime);
 
             // Cache the model matrix so we don't have to recalculate on draw call
             this.cached_model_matrix = model_matrix;
@@ -41,13 +41,13 @@ class SceneNode{
         }
     }
 
-    _predraw_children(model_matrix, gl, uniforms){
+    _predraw_children(model_matrix, gl, uniforms, deltaTime){
         // Draw all of children
         for(let i=0; i<this.children.length; i++){
             // Give children fresh matrix that they can modify
             let fresh_matrix = new Matrix4(model_matrix);
             // Draw child
-            this.children[i].predraw(fresh_matrix, gl, uniforms);
+            this.children[i].predraw(fresh_matrix, gl, uniforms, deltaTime);
         }
     }
 
@@ -99,10 +99,10 @@ class SceneGraph extends SceneNode{
     }
 
 
-    draw(gl, uniforms){
+    draw(gl, uniforms, deltaTime){
         let model_matrix = new Matrix4();
         model_matrix.setTranslate(0, 0, 0);
-        super._predraw_children(model_matrix, gl, uniforms);
+        super._predraw_children(model_matrix, gl, uniforms, deltaTime);
         super._draw_children(gl, uniforms);
     }
 
@@ -178,6 +178,32 @@ class SceneLightingNode extends SceneNode{
         // Do nothing, light has already been placed
     }
 
-
-
 }
+
+
+
+class Animation extends SceneNode{
+    animation_function;
+  
+    constructor(friendly_name){
+        super(friendly_name);
+    }
+  
+    set_function(animation_function){
+      this.animation_function = animation_function;
+    }
+
+    set_state(state){
+        this.state = state
+    }
+  
+    _predraw_self(model_matrix, gl, uniforms, deltaTime){
+      if(!this.animation_function){
+        console.log("Error: Unable to apply animation "+this.friendly_name+" as no animation function has been provided");
+      }else{
+        this.state = this.animation_function(model_matrix, deltaTime, this.state);
+      }
+    }
+
+    _draw_self(){}
+  }
