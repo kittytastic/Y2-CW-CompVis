@@ -40,9 +40,9 @@ class SceneNode{
 
     predraw(model_matrix, gl, uniforms, deltaTime){
         if(!this.has_error){
-            
-            this._apply_transformation(model_matrix)
             this._apply_animations(model_matrix, deltaTime)
+            this._apply_transformation(model_matrix)
+            
             this._predraw_self(model_matrix, gl, uniforms, deltaTime);
             this._predraw_children(model_matrix, gl, uniforms, deltaTime);
 
