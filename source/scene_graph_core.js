@@ -11,7 +11,11 @@ class SceneNode{
     }
 
     add_child(new_child){
-        this.children.push(new_child);
+        if(!Array.isArray(new_child)){
+            this.children.push(new_child);
+        }else{
+            this.children =this.children.concat(new_child);
+        }
     }
 
     add_transform(transform){

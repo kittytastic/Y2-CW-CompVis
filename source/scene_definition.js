@@ -8,40 +8,13 @@ function make_scene(models, textures, lighting_controller){
     let chair1 = make_light_chair(models, textures, lighting_controller);
     chair1.add_transform(g_chair_x_transform);
     chair1.add_transform(g_chair_y_transform);
+    chair1.add_transform(new Translate(0, 3, 0));
+    chair1.add_transform(new Scale(0.5, 0.5, 0.5))
 
 
    
-
-
-   
-
-
-    let chair_sec = make_chair(models, textures);
-    chair_sec.add_transform(new Translate(-13,0,0))
-    //chair_sec.add_animation(sec_ani)
-
-    let chair_min = make_chair(models, textures);
-    chair_min.add_transform(new Translate(-9,0,0))
-    //chair_min.add_animation(min_ani)
-
-    let chair_hr = make_chair(models, textures);
-    chair_hr.add_transform(new Translate(-5,0,0))
-    //chair_hr.add_animation(hours_ani)
-
-    let sec_ani = new SceneAnimationNode("Spin", {}, seconds);
-    sec_ani.add_child(chair_sec)
-
-    let min_ani = new SceneAnimationNode("Spin", {}, mins);
-    min_ani.add_child(chair_min)
-
-    let hours_ani = new SceneAnimationNode("Spin", {}, hours);
-    hours_ani.add_child(chair_hr)
-
     scene_graph.add_child(chair1)
-
-    scene_graph.add_child(sec_ani)
-    scene_graph.add_child(min_ani)
-    scene_graph.add_child(hours_ani)
+    scene_graph.add_child(building(models, textures))
 
     return scene_graph;
 }
@@ -49,9 +22,6 @@ function make_scene(models, textures, lighting_controller){
 function make_chair(models, textures){
     let chair = new SceneWrapperNode("Chair");
 
-    /*let spin_ani2 = new Animation("Spin");
-    spin_ani2.set_function(rotate_rev_x);
-    spin_ani2.set_state({rot:0});*/
     
     let back = new SceneModelNode( "Back", models['box'], textures['wood']);
     back.add_transform(new Translate(0, 1.25, -0.75))
@@ -63,22 +33,18 @@ function make_chair(models, textures){
     let leg1 = new SceneModelNode( "Leg 1", models['box'], textures['wood']);
     leg1.add_transform(new Translate(0.75, -1, -0.75))
     leg1.add_transform(new Scale(0.5, 1.5, 0.5))
-    //leg1.add_animation(spin_ani2)
-
+ 
     let leg2 = new SceneModelNode("Leg 2", models['box'], textures['wood']);
     leg2.add_transform(new Translate(0.75, -1, 0.75))
     leg2.add_transform(new Scale(0.5, 1.5, 0.5))
-    //leg2.add_animation(spin_ani2) 
 
     let leg3 = new SceneModelNode("Leg 3", models['box'], textures['wood']);
     leg3.add_transform(new Translate(-0.75, -1, -0.75))
     leg3.add_transform(new Scale(0.5, 1.5, 0.5))
-    //leg3.add_animation(spin_ani2)
     
     let leg4 = new SceneModelNode("Leg 4", models['box'], textures['wood']);
     leg4.add_transform(new Translate(-0.75, -1, 0.75))
     leg4.add_transform(new Scale(0.5, 1.5, 0.5))
-    //leg4.add_animation(spin_ani2)
     
 
     chair.add_child(back)
@@ -145,4 +111,38 @@ function make_light_chair(models, textures, lighting_controller){
     
 
     return chair;
+}
+
+function building(models, textures){
+    let wall = []
+    let thickness = 0.5
+    let height = 3 * METER_TO_UNITS
+
+    let x_length = 5 * METER_TO_UNITS;
+    let z_length = 4 * METER_TO_UNITS;
+
+
+    wall.push(new SceneModelNode("Wall 0", models['box'], textures['wood']));
+    wall[0].add_transform(new Translate(-x_length/2, height/2, 0))
+    wall[0].add_transform(new Scale(thickness, height, z_length))
+
+    wall.push(new SceneModelNode("Wall 1", models['box'], textures['feature_wall']));
+    wall[1].add_transform(new Translate(x_length/2, height/2, 0))
+    wall[1].add_transform(new Scale(thickness, height, z_length))
+
+    wall.push(new SceneModelNode("Wall 2", models['box'], textures['wood']));
+    wall[2].add_transform(new Translate(0, height/2, -z_length/2))
+    wall[2].add_transform(new Scale(x_length, height, thickness))
+
+    wall.push(new SceneModelNode("Wall 3", models['box'], textures['wood']));
+    wall[3].add_transform(new Translate(0, height/2, z_length/2))
+    wall[3].add_transform(new Scale(x_length, height, thickness))
+
+
+
+    let floor = new SceneModelNode("Floor", models['box'], textures['stone']);
+    floor.add_transform(new Scale(x_length, 0.5, z_length))
+
+    return [...wall, floor]
+
 }

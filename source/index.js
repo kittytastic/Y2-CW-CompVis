@@ -5,6 +5,7 @@ let KB_CHAIR_ANGLE_PS = 360
 let KB_MOVE_PS = 3;
 let KB_TURN_ANGLE_PS = 60;
 
+let METER_TO_UNITS = 3
 
 var g_xAngle = 0.0;    // The rotation x angle (degrees)
 var g_yAngle = 0.0;    // The rotation y angle (degrees)
@@ -64,7 +65,7 @@ function main() {
 
   // Set perspective
   let projMatrix = new Matrix4();  
-  projMatrix.setPerspective(30, canvas.width/canvas.height, 1, 100);
+  projMatrix.setPerspective(40, canvas.width/canvas.height, 1, 100);
   gl.uniformMatrix4fv(uniforms.u_ProjMatrix, false, projMatrix.elements);
 
 
@@ -78,7 +79,7 @@ function main() {
   
   
   // Initialise camera
-  g_camera = new Camera(0,0,15,0,0);
+  g_camera = new Camera(0,1.8 * METER_TO_UNITS,3,0,0);
 
   // Make 3D models
   let models = make_all_models(gl);

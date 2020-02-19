@@ -5,6 +5,8 @@ function make_all_textures(gl, uniforms){
     textures['wood'] =  tc.make_texture('../Textures/wood.png');
     textures['dark_wood'] =  tc.make_texture('../Textures/dark_wood.png');
     textures['diamond'] =  tc.make_texture('../Textures/diamond.png');
+    textures['stone'] =  tc.make_texture('../Textures/stone.png');
+    textures['feature_wall'] =  tc.make_texture('../Textures/feature_wall.png');
 
 
     return textures
