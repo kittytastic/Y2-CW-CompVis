@@ -40,9 +40,8 @@ class SceneNode{
 
     predraw(model_matrix, gl, uniforms, deltaTime){
         if(!this.has_error){
-            this._apply_animations(model_matrix, deltaTime)
             this._apply_transformation(model_matrix)
-            
+            this._apply_animations(model_matrix, deltaTime)
             this._predraw_self(model_matrix, gl, uniforms, deltaTime);
             this._predraw_children(model_matrix, gl, uniforms, deltaTime);
 
@@ -193,28 +192,13 @@ class SceneLightingNode extends SceneNode{
 
 }
 
+class SceneAnimationNode extends SceneNode{
+    constructor(friendly_name, initial_state, animation_function){
+        super(friendly_name)
 
-
-class Animation{
-    animation_function;
-  
-    constructor(friendly_name){
-       this.friendly_name = friendly_name;
-    }
-  
-    set_function(animation_function){
-      this.animation_function = animation_function;
+        super.add_animation(new Animation(friendly_name, initial_state, animation_function))
     }
 
-    set_state(state){
-        this.state = state
-    }
-  
-    apply(model_matrix, deltaTime){
-      if(!this.animation_function){
-        console.log("Error: Unable to apply animation "+this.friendly_name+" as no animation function has been provided");
-      }else{
-        this.state = this.animation_function(model_matrix, deltaTime, this.state);
-      }
-    }
-  }
+    _predraw_self(){}
+    _draw_self(){}
+}

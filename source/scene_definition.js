@@ -10,38 +10,38 @@ function make_scene(models, textures, lighting_controller){
     chair1.add_transform(g_chair_y_transform);
 
 
-    let sec_ani = new Animation("Spin");
-    sec_ani.set_function(seconds);
-    sec_ani.set_state({});
+   
 
-    let min_ani = new Animation("Spin");
-    min_ani.set_function(mins);
-    min_ani.set_state({});
-
-    let hours_ani = new Animation("Spin");
-    hours_ani.set_function(hours);
-    hours_ani.set_state({});
 
    
 
 
     let chair_sec = make_chair(models, textures);
     chair_sec.add_transform(new Translate(-13,0,0))
-    chair_sec.add_animation(sec_ani)
+    //chair_sec.add_animation(sec_ani)
 
     let chair_min = make_chair(models, textures);
     chair_min.add_transform(new Translate(-9,0,0))
-    chair_min.add_animation(min_ani)
+    //chair_min.add_animation(min_ani)
 
     let chair_hr = make_chair(models, textures);
     chair_hr.add_transform(new Translate(-5,0,0))
-    chair_hr.add_animation(hours_ani)
+    //chair_hr.add_animation(hours_ani)
+
+    let sec_ani = new SceneAnimationNode("Spin", {}, seconds);
+    sec_ani.add_child(chair_sec)
+
+    let min_ani = new SceneAnimationNode("Spin", {}, mins);
+    min_ani.add_child(chair_min)
+
+    let hours_ani = new SceneAnimationNode("Spin", {}, hours);
+    hours_ani.add_child(chair_hr)
 
     scene_graph.add_child(chair1)
 
-    scene_graph.add_child(chair_sec)
-    scene_graph.add_child(chair_min)
-    scene_graph.add_child(chair_hr)
+    scene_graph.add_child(sec_ani)
+    scene_graph.add_child(min_ani)
+    scene_graph.add_child(hours_ani)
 
     return scene_graph;
 }
@@ -146,64 +146,3 @@ function make_light_chair(models, textures, lighting_controller){
 
     return chair;
 }
-
-let AN_ROTATE_SPEED = 30;
-function rotate_x(model_matrix, deltaTime, prevState){
-
-
-    //console.log(deltaTime)
-    if(!deltaTime){
-        console.log("Error: bad time value given to animation")
-    }
-   
-    deltaTime *= 0.001;
-    let rot = prevState.rot + AN_ROTATE_SPEED * deltaTime
-    model_matrix.rotate(rot, 0, 1, 0);
-    return {...prevState, rot: rot}
-}
-
-function rotate_rev_x(model_matrix, deltaTime, prevState){
-
-
-    //console.log(deltaTime)
-    if(!deltaTime){
-        console.log("Error")
-    }
-   
-    deltaTime *= 0.001;
-    let rot = prevState.rot - AN_ROTATE_SPEED * 1 * deltaTime
-    model_matrix.rotate(rot, 0, 0, 1);
-    return {...prevState, rot: rot}
-}
-
-function seconds(model_matrix, deltaTime, prevState){
-
-   let s = new Date().getSeconds();
-
-    let rot = s * 6;
-    model_matrix.rotate(-rot, 0, 1, 0);
-
-    return {...prevState}
-}
-
-function mins(model_matrix, deltaTime, prevState){
-
-    let d = new Date()
-    let m = d.getMinutes() + d.getSeconds()/60;
- 
-     let rot = m * 6;
-     model_matrix.rotate(-rot, 0, 1, 0);
- 
-     return {...prevState}
- }
-
- function hours(model_matrix, deltaTime, prevState){
-
-    let d = new Date()
-    let h = d.getHours() + d.getMinutes()/60;
-    h = h%12;
-     let rot = h/12 * 360;
-     model_matrix.rotate(-rot, 0, 1, 0);
- 
-     return {...prevState}
- }
