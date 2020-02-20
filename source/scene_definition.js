@@ -13,8 +13,8 @@ function make_scene(models, textures, lighting_controller){
 
 
    
-    scene_graph.add_child(chair1)
-    scene_graph.add_child(building(models, textures))
+    //scene_graph.add_child(chair1)
+    scene_graph.add_child(building(models, textures, lighting_controller))
 
     return scene_graph;
 }
@@ -113,7 +113,7 @@ function make_light_chair(models, textures, lighting_controller){
     return chair;
 }
 
-function building(models, textures){
+function building(models, textures, lighting_controller){
     let wall = []
     let thickness = 0.5
     let height = HEIGHT * METER_TO_UNITS
@@ -143,8 +143,29 @@ function building(models, textures){
     let floor = new SceneModelNode("Floor", models['floor'], textures['stone']);
     let ceiling = new SceneModelNode("Ceiling", models['floor'], textures['wood']);
     ceiling.add_transform(new Translate(0, height, 0));
+    ceiling.add_child(light(models, textures, lighting_controller))
     //floor.add_transform(new Scale(x_length, 0.5, z_length))
 
     return [...wall, floor, ceiling]
+
+}
+
+
+
+function light(models, textures, lighting_controller){
+
+    let light = lighting_controller.get_point_light();
+    light.set_colour(1,1,1);
+
+    let light_node = new SceneLightingNode("Light", light);
+    light_node.add_transform(new Translate(0, -2, 0))
+    light_node.add_animation(new Animation("Light animation", {angle: 0, direction: false}, light_sway))
+
+    let light_bulb = new SceneModelNode("Light Bulb", models['box'], textures['feature_wall'])
+    light_node.add_child(light_bulb)
+
+
+    return light_node
+
 
 }

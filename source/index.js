@@ -103,10 +103,10 @@ function main() {
 
 // Start render loop
 function start_render_loop(gl, uniforms){
-  var last_frame_time = new Date();
+  var last_frame_time;
 
   function render(now) {
-    //if(!g_last_frame) g_last_frame = now
+    if(!last_frame_time) last_frame_time = now
     const deltaTime = now - last_frame_time;
     last_frame_time = now;
 

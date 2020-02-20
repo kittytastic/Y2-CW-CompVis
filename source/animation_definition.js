@@ -58,3 +58,36 @@ function mins(model_matrix, deltaTime, prevState){
  
      return {...prevState}
  }
+
+
+
+ function light_sway(model_matrix, deltaTime, prevState){
+    deltaTime *=  0.001;
+    
+
+    let sway_v = 0.5;
+    let threshold = 10;
+
+    let new_angle = prevState.angle;
+    let new_direction = prevState.direction
+
+    if(prevState.direction){
+        new_angle += sway_v * deltaTime
+       
+    }else{
+        new_angle -= sway_v * deltaTime
+    }
+
+    if(new_angle>threshold&&prevState.direction){
+        new_direction = false;
+    }
+
+    if(new_angle<(-threshold)&&!prevState.direction){
+        new_direction = true
+    }
+
+    //model_matrix.rotate(new_angle, 1, 0, 0);
+    model_matrix.translate(new_angle, 0, 0)
+
+    return {angle:new_angle, direction:new_direction}
+ }
