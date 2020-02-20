@@ -1,5 +1,8 @@
 const DEBUG = false
 
+let ROOM_X = 10
+let ROOM_Z = 6
+let HEIGHT = 3
 
 let KB_CHAIR_ANGLE_PS = 360
 let KB_MOVE_PS = 3;

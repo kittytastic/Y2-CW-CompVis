@@ -2,7 +2,8 @@ function make_all_models(gl){
     let models = {}
 
     models['box'] = make_box_model(gl);
-
+   models['floor'] = custom_box(gl, ROOM_X*METER_TO_UNITS, 0.5, ROOM_Z*METER_TO_UNITS, 3)
+   
 
     return models
 }
@@ -63,7 +64,7 @@ function make_box_model(gl) {
   }
 
 
-  function custom_box(gl, x, y, z) {
+  function custom_box(gl, x, y, z, texture_rate) {
    // Create a cube
    //    v6----- v5
    //   /|      /|
@@ -81,9 +82,9 @@ function make_box_model(gl) {
       x,-y,-z,  -x,-y,-z,  -x, y,-z,   x, y,-z  // v4-v7-v6-v5 back
    ]);
 
-   x_rep = x/METER_TO_UNITS
-   y_rep = y/METER_TO_UNITS
-   z_rep = z/METER_TO_UNITS
+   x_rep = x/METER_TO_UNITS * texture_rate
+   y_rep = y/METER_TO_UNITS * texture_rate
+   z_rep = z/METER_TO_UNITS * texture_rate
 
   var texCoords = new Float32Array([
    x_rep, y_rep,   0.0, y_rep,   0.0, 0.0,   x_rep, 0.0, // v0-v1-v2-v3 front

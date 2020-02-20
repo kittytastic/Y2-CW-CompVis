@@ -116,13 +116,13 @@ function make_light_chair(models, textures, lighting_controller){
 function building(models, textures){
     let wall = []
     let thickness = 0.5
-    let height = 3 * METER_TO_UNITS
+    let height = HEIGHT * METER_TO_UNITS
 
-    let x_length = 5 * METER_TO_UNITS;
-    let z_length = 4 * METER_TO_UNITS;
+    let x_length = ROOM_X * METER_TO_UNITS;
+    let z_length = ROOM_Z * METER_TO_UNITS;
 
 
-    wall.push(new SceneModelNode("Wall 0", models['box'], textures['wood']));
+    wall.push(new SceneModelNode("Wall 0", models['box'], textures['wall']));
     wall[0].add_transform(new Translate(-x_length/2, height/2, 0))
     wall[0].add_transform(new Scale(thickness, height, z_length))
 
@@ -130,19 +130,21 @@ function building(models, textures){
     wall[1].add_transform(new Translate(x_length/2, height/2, 0))
     wall[1].add_transform(new Scale(thickness, height, z_length))
 
-    wall.push(new SceneModelNode("Wall 2", models['box'], textures['wood']));
+    wall.push(new SceneModelNode("Wall 2", models['box'], textures['wall']));
     wall[2].add_transform(new Translate(0, height/2, -z_length/2))
     wall[2].add_transform(new Scale(x_length, height, thickness))
 
-    wall.push(new SceneModelNode("Wall 3", models['box'], textures['wood']));
+    wall.push(new SceneModelNode("Wall 3", models['box'], textures['wall']));
     wall[3].add_transform(new Translate(0, height/2, z_length/2))
     wall[3].add_transform(new Scale(x_length, height, thickness))
 
 
 
-    let floor = new SceneModelNode("Floor", models['box'], textures['stone']);
-    floor.add_transform(new Scale(x_length, 0.5, z_length))
+    let floor = new SceneModelNode("Floor", models['floor'], textures['stone']);
+    let ceiling = new SceneModelNode("Ceiling", models['floor'], textures['wood']);
+    ceiling.add_transform(new Translate(0, height, 0));
+    //floor.add_transform(new Scale(x_length, 0.5, z_length))
 
-    return [...wall, floor]
+    return [...wall, floor, ceiling]
 
 }
