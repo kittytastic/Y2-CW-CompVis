@@ -1,6 +1,7 @@
 class SceneNode{
     children = [];
     transformations = [];
+    non_inherited_transformations = [];
     animations = [];
     has_error;
     friendly_name;
@@ -18,8 +19,13 @@ class SceneNode{
         }
     }
 
-    add_transform(transform){
-        this.transformations.push(transform);
+    add_transform(transform, not_inherited){
+        if(not_inherited){
+            this.non_inherited_transformations.push(transform)
+        }else{
+            this.transformations.push(transform);
+        }
+        
     }
 
     add_animation(animation){
@@ -36,6 +42,12 @@ class SceneNode{
         }
     }
 
+    _apply_me_only_transforms(model_matrix){
+        for(let i=0; i<this.non_inherited_transformations.length; i++){
+            this.non_inherited_transformations[i].apply(model_matrix);
+        }
+    }
+
     _apply_animations(model_matrix, deltaTime){
         for(let i=0; i<this.animations.length; i++){
             this.animations[i].apply(model_matrix, deltaTime);
@@ -46,8 +58,10 @@ class SceneNode{
         if(!this.has_error){
             this._apply_transformation(model_matrix)
             this._apply_animations(model_matrix, deltaTime)
-            this._predraw_self(model_matrix, gl, uniforms, deltaTime);
             this._predraw_children(model_matrix, gl, uniforms, deltaTime);
+            this._apply_me_only_transforms(model_matrix)
+            this._predraw_self(model_matrix, gl, uniforms, deltaTime);
+           
 
             // Cache the model matrix so we don't have to recalculate on draw call
             this.cached_model_matrix = model_matrix;

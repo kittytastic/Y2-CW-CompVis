@@ -133,11 +133,11 @@ function building(models, textures, lighting_controller){
 
     wall.push(new SceneModelNode("Wall 2", models['box'], textures['wall']));
     wall[2].add_transform(new Translate(0, height/2, -z_length/2))
-    wall[2].add_transform(new Scale(x_length, height, thickness))
+    wall[2].add_transform(new Scale(x_length, height, thickness), true)
 
     let clock = make_clock(models, textures)
     wall[2].add_child(clock);
-    clock.add_transform(new Translate(3,3,3))
+    clock.add_transform(new Translate(0,-1,1))
 
     wall.push(new SceneModelNode("Wall 3", models['box'], textures['wall']));
     wall[3].add_transform(new Translate(0, height/2, z_length/2))
@@ -194,28 +194,28 @@ function make_clock(models, textures){
     
     
 
-    let backplate = new SceneModelNode("Clock Back Plate", models['box'], textures['wall'])
+    let backplate = new SceneModelNode("Clock Back Plate", models['box'], textures['feature_wall'])
     backplate.add_transform(new Translate(0, 3, 0))
     backplate.add_transform(new Scale(2, 2, clock_thickness))
     //light_node.add_transform(new Translate(0, 0, 0))
 
 
     let hand_offset = clock_thickness+hand_thickness*2
-    let hours = new SceneModelNode("Clock Hours", models['box'], textures['feature_wall'])
+    let hours = new SceneModelNode("Clock Hours", models['box'], textures['wall'])
     hours.add_transform(new Translate(0, hr_hand_length/2-spoke_size, hand_spacing+hand_offset))
     hours.add_transform(new Scale(hr_hand_width, hr_hand_length, hand_thickness))
     
     let hr_ani = new SceneAnimationNode("Hours animation", {}, animation_hours)
     hr_ani.add_child(hours)
    
-    let minutes = new SceneModelNode("Clock Minutes", models['box'], textures['feature_wall'])
+    let minutes = new SceneModelNode("Clock Minutes", models['box'], textures['wall'])
     minutes.add_transform(new Translate(0, min_hand_length/2- spoke_size, hand_spacing*2+hand_offset))
     minutes.add_transform(new Scale(min_hand_width, min_hand_length, hand_thickness))
     
     let min_ani = new SceneAnimationNode("Hours animation", {}, animation_minutes)
     min_ani.add_child(minutes)
 
-    let seconds = new SceneModelNode("Clock Seconds", models['box'], textures['feature_wall'])
+    let seconds = new SceneModelNode("Clock Seconds", models['box'], textures['wall'])
     seconds.add_transform(new Translate(0, sec_hand_length/2-spoke_size, hand_spacing*3+hand_offset)) 
     seconds.add_transform(new Scale(sec_hand_width, sec_hand_length, hand_thickness))
     //seconds.add_animation(new Animation("Seconds animation", {}, animation_seconds))
