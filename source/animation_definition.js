@@ -27,34 +27,34 @@ function rotate_rev_x(model_matrix, deltaTime, prevState){
     return {...prevState, rot: rot}
 }
 
-function seconds(model_matrix, deltaTime, prevState){
+function animation_seconds(model_matrix, deltaTime, prevState){
 
    let s = new Date().getSeconds();
 
     let rot = s * 6;
-    model_matrix.rotate(-rot, 0, 1, 0);
+    model_matrix.rotate(-rot, 0, 0, 1);
 
     return {...prevState}
 }
 
-function mins(model_matrix, deltaTime, prevState){
+function animation_minutes(model_matrix, deltaTime, prevState){
 
     let d = new Date()
     let m = d.getMinutes() + d.getSeconds()/60 +d.getMilliseconds()/(60*1000);
  
      let rot = m * 6;
-     model_matrix.rotate(-rot, 0, 1, 0);
+     model_matrix.rotate(-rot, 0, 0, 1);
  
      return {...prevState}
  }
 
- function hours(model_matrix, deltaTime, prevState){
+ function animation_hours(model_matrix, deltaTime, prevState){
 
     let d = new Date()
     let h = d.getHours() + d.getMinutes()/60;
     h = h%12;
      let rot = h/12 * 360;
-     model_matrix.rotate(-rot, 0, 1, 0);
+     model_matrix.rotate(-rot, 0, 0, 1);
  
      return {...prevState}
  }

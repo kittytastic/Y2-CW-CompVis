@@ -15,6 +15,7 @@ function make_scene(models, textures, lighting_controller){
    
     //scene_graph.add_child(chair1)
     scene_graph.add_child(building(models, textures, lighting_controller))
+    scene_graph.add_child(clock(models, textures))
 
     return scene_graph;
 }
@@ -168,4 +169,61 @@ function light(models, textures, lighting_controller){
     return light_node
 
 
+}
+
+
+function clock(models, textures){
+
+    let hr_hand_length = 0.3
+    let min_hand_length = 0.4
+    let sec_hand_length = 0.5
+
+    let hr_hand_width = 0.05
+    let min_hand_width = 0.05
+    let sec_hand_width = 0.03
+
+    let spoke_size = 0.05
+
+    let hand_thickness = 0.1
+    let clock_thickness = 0.2
+    let hand_spacing = hand_thickness
+    
+    
+
+    let backplate = new SceneModelNode("Clock Back Plate", models['box'], textures['wall'])
+    backplate.add_transform(new Translate(0, 3, 0))
+    backplate.add_transform(new Scale(2, 2, clock_thickness))
+    //light_node.add_transform(new Translate(0, 0, 0))
+
+
+    let hand_offset = clock_thickness+hand_thickness*2
+    let hours = new SceneModelNode("Clock Hours", models['box'], textures['feature_wall'])
+    hours.add_transform(new Translate(0, hr_hand_length/2-spoke_size, hand_spacing+hand_offset))
+    hours.add_transform(new Scale(hr_hand_width, hr_hand_length, hand_thickness))
+    
+    let hr_ani = new SceneAnimationNode("Hours animation", {}, animation_hours)
+    hr_ani.add_child(hours)
+   
+    let minutes = new SceneModelNode("Clock Minutes", models['box'], textures['feature_wall'])
+    minutes.add_transform(new Translate(0, min_hand_length/2- spoke_size, hand_spacing*2+hand_offset))
+    minutes.add_transform(new Scale(min_hand_width, min_hand_length, hand_thickness))
+    
+    let min_ani = new SceneAnimationNode("Hours animation", {}, animation_minutes)
+    min_ani.add_child(minutes)
+
+    let seconds = new SceneModelNode("Clock Seconds", models['box'], textures['feature_wall'])
+    seconds.add_transform(new Translate(0, sec_hand_length/2-spoke_size, hand_spacing*3+hand_offset)) 
+    seconds.add_transform(new Scale(sec_hand_width, sec_hand_length, hand_thickness))
+    //seconds.add_animation(new Animation("Seconds animation", {}, animation_seconds))
+
+    let sec_ani = new SceneAnimationNode("Hours animation", {}, animation_seconds)
+    sec_ani.add_child(seconds)
+
+   // backplate.add_child(hours)
+    backplate.add_child(hr_ani)
+    backplate.add_child(min_ani)
+    backplate.add_child(sec_ani)
+    
+
+    return backplate
 }
