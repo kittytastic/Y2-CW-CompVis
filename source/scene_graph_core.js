@@ -220,3 +220,15 @@ class SceneAnimationNode extends SceneNode{
     _predraw_self(){}
     _draw_self(){}
 }
+
+
+class SceneDebugNode extends SceneNode{
+    constructor(friendly_name, model, texture){
+        super(friendly_name)
+    }
+
+    _draw_self(model_matrix, gl, uniforms){
+        print_debug_model_matrix(model_matrix)
+    }
+    _predraw_self(){}
+}

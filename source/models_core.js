@@ -66,9 +66,9 @@
         super();
         this.attributes = []
         this.has_error = false
-        this.attributes.push(new Attribute(gl, 'a_Position', vertices, 3, gl.FLOAT));
-        this.attributes.push(new Attribute(gl, 'a_Normal', normals, 3, gl.FLOAT));
-        this.attributes.push(new Attribute(gl, 'a_TexCoords', texture_coords, 2, gl.FLOAT));
+        this.attributes.push(new Attribute(gl, 'a_Position', new Float32Array(vertices), 3, gl.FLOAT));
+        this.attributes.push(new Attribute(gl, 'a_Normal', new Float32Array(normals), 3, gl.FLOAT));
+        this.attributes.push(new Attribute(gl, 'a_TexCoords', new Float32Array(texture_coords), 2, gl.FLOAT));
         this.n = indices.length;
 
         this.buffer = gl.createBuffer()
@@ -79,7 +79,7 @@
         }
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
     }
 
@@ -99,7 +99,7 @@
     draw(gl){
       this.switch_to_me(gl)
       // Draw the cube
-      gl.drawElements(gl.TRIANGLES, this.n, gl.UNSIGNED_BYTE, 0);
+      gl.drawElements(gl.TRIANGLES, this.n, gl.UNSIGNED_SHORT, 0);
     }
 
   }
