@@ -1,4 +1,4 @@
-const DEBUG = false
+const DEBUG = true
 
 let ROOM_X = 10
 let ROOM_Z = 6

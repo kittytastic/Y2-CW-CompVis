@@ -104,3 +104,16 @@
 
   }
 
+ function import_from_json(gl, json_obj){
+   let vertices = json_obj.meshes[0].vertices
+   let normals = json_obj.meshes[0].normals;
+   let texture_coords = json_obj.meshes[0].texturecoords[0]
+   let indices = [].concat.apply([], json_obj.meshes[0].faces);
+
+  console.log(vertices)
+  console.log(normals)
+  console.log(texture_coords)
+  console.log(indices)
+  return new Basic3DModel(gl, vertices, normals, texture_coords, indices);
+ }
+

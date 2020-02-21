@@ -3,7 +3,7 @@ function make_all_models(gl){
 
     models['box'] = make_box_model(gl);
    models['floor'] = custom_box(gl, ROOM_X*METER_TO_UNITS, 0.5, ROOM_Z*METER_TO_UNITS, 3)
-   
+   models['cylinder'] = import_from_json(gl, MODEL_CYLINDER);
 
     return models
 }

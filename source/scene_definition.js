@@ -16,6 +16,9 @@ function make_scene(models, textures, lighting_controller){
     //scene_graph.add_child(chair1)
     scene_graph.add_child(building(models, textures, lighting_controller))
    // scene_graph.add_child(clock(models, textures))
+    
+   scene_graph.add_child(new SceneModelNode("Cylinder", models['cylinder'], textures['wood']))
+
 
     return scene_graph;
 }
