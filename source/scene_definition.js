@@ -21,7 +21,7 @@ function make_scene(models, textures, lighting_controller){
    c.add_transform(new Translate(2,2,2))
    c.add_transform(new Scale(5,5,5))
    c.add_child(new SceneDebugNode())
-   scene_graph.add_child(c)
+   //scene_graph.add_child(c)
 
 
     return scene_graph;
