@@ -81,4 +81,10 @@ class Camera{
     deg = k>0?k:360+k
     return Math.PI * (deg/180)
   }
+
+  print_debug(){
+    document.getElementById("c_x").innerHTML = round_to(this.x, 1)
+    document.getElementById("c_y").innerHTML = round_to(this.y, 1)
+    document.getElementById("c_z").innerHTML = round_to(this.z, 1)
+  }
 }

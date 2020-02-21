@@ -15,7 +15,7 @@ function make_scene(models, textures, lighting_controller){
    
     //scene_graph.add_child(chair1)
     scene_graph.add_child(building(models, textures, lighting_controller))
-    scene_graph.add_child(clock(models, textures))
+   // scene_graph.add_child(clock(models, textures))
 
     return scene_graph;
 }
@@ -135,6 +135,10 @@ function building(models, textures, lighting_controller){
     wall[2].add_transform(new Translate(0, height/2, -z_length/2))
     wall[2].add_transform(new Scale(x_length, height, thickness))
 
+    let clock = make_clock(models, textures)
+    wall[2].add_child(clock);
+    clock.add_transform(new Translate(3,3,3))
+
     wall.push(new SceneModelNode("Wall 3", models['box'], textures['wall']));
     wall[3].add_transform(new Translate(0, height/2, z_length/2))
     wall[3].add_transform(new Scale(x_length, height, thickness))
@@ -172,7 +176,7 @@ function light(models, textures, lighting_controller){
 }
 
 
-function clock(models, textures){
+function make_clock(models, textures){
 
     let hr_hand_length = 0.3
     let min_hand_length = 0.4

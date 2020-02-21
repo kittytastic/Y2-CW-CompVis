@@ -38,7 +38,8 @@ function animation_seconds(model_matrix, deltaTime, prevState){
 }
 
 function animation_minutes(model_matrix, deltaTime, prevState){
-
+    //console.log("Clock somewhere?")
+    print_debug_model_matrix(model_matrix)
     let d = new Date()
     let m = d.getMinutes() + d.getSeconds()/60 +d.getMilliseconds()/(60*1000);
  

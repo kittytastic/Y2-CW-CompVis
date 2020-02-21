@@ -122,6 +122,7 @@ function start_render_loop(gl, uniforms){
 
 
 function draw(gl, uniforms, deltaTime) {
+
   g_keyboard_controller.apply_key_actions()
 
   // Clear color and depth buffer
@@ -130,6 +131,8 @@ function draw(gl, uniforms, deltaTime) {
   // Set camera
   let viewMatrix = g_camera.make_view_matrix();
   gl.uniformMatrix4fv(uniforms.u_ViewMatrix, false, viewMatrix.elements);
+
+  g_camera.print_debug();
 
   // Don't apply lighting
   //gl.uniform1i(uniforms.u_isLighting, false);
