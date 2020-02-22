@@ -166,30 +166,44 @@ function building(models, textures, lighting_controller){
 
 function light(models, textures, lighting_controller){
 
+    let light_obj = new SceneWrapperNode("Light Cord")
+    light_obj.add_transform(new Translate(0, -0.5, 0)) 
+
+    light_obj.add_animation(new Animation("Light animation", {angle: 0, direction: false}, light_sway))
+
+    let light_cord = new SceneModelNode("Light Cord", models['cylinder'], textures['brushed_metal_dark'])
+    light_cord.add_transform(new Translate(0, -1, 0))
+
+    light_cord.add_transform(new Rotate(90, 1, 0, 0))
+    
+    let cord_thickness = 0.05
+    light_cord.add_transform(new Scale(cord_thickness, cord_thickness, 1))
+
+
     let light = lighting_controller.get_point_light();
     light.set_colour(1,1,1);
 
     let light_node = new SceneLightingNode("Light", light);
     light_node.add_transform(new Translate(0, -2, 0))
-    light_node.add_animation(new Animation("Light animation", {angle: 0, direction: false}, light_sway))
+    
 
     let light_bulb = new SceneModelNode("Light Bulb", models['cylinder'], textures['lamp'])
     light_bulb.add_transform(new Rotate(90, 1, 0 , 0));
+    
+    
     let sf = 0.6
     light_bulb.add_transform(new Scale(0.6,0.6,0.6));
     light_node.add_child(light_bulb)
 
+    light_obj.add_child(light_node)
+    light_obj.add_child(light_cord)
 
-    return light_node
+
+    return light_obj
 
 
 }
 
-
-function make_light_rail(models, textures){
-    let lr = new SceneModelNode("Floor", models['box'], textures['wood']);
-    
-}
 
 function make_clock(models, textures){
 

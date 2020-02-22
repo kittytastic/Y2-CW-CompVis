@@ -66,8 +66,8 @@ function animation_minutes(model_matrix, deltaTime, prevState){
     deltaTime *=  0.001;
     
 
-    let sway_v = 0.5;
-    let threshold = 10;
+    let sway_v = 10;
+    let threshold = 50;
 
     let new_angle = prevState.angle;
     let new_direction = prevState.direction
@@ -80,15 +80,17 @@ function animation_minutes(model_matrix, deltaTime, prevState){
     }
 
     if(new_angle>threshold&&prevState.direction){
+        new_angle = threshold
         new_direction = false;
     }
 
     if(new_angle<(-threshold)&&!prevState.direction){
+        new_angle = -threshold
         new_direction = true
     }
 
-    //model_matrix.rotate(new_angle, 1, 0, 0);
-    model_matrix.translate(new_angle, 0, 0)
+    model_matrix.rotate(new_angle, 1, 0, 0);
+    //model_matrix.translate(new_angle, 0, 0)
 
     return {angle:new_angle, direction:new_direction}
  }
