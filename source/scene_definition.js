@@ -152,7 +152,7 @@ function building(models, textures, lighting_controller){
 
 
 
-    let floor = new SceneModelNode("Floor", models['floor'], textures['stone']);
+    let floor = new SceneModelNode("Floor", models['floor'], textures['carpet']);
     let ceiling = new SceneModelNode("Ceiling", models['floor'], textures['wood']);
     ceiling.add_transform(new Translate(0, height, 0));
     ceiling.add_child(light(models, textures, lighting_controller))
@@ -173,7 +173,10 @@ function light(models, textures, lighting_controller){
     light_node.add_transform(new Translate(0, -2, 0))
     light_node.add_animation(new Animation("Light animation", {angle: 0, direction: false}, light_sway))
 
-    let light_bulb = new SceneModelNode("Light Bulb", models['box'], textures['feature_wall'])
+    let light_bulb = new SceneModelNode("Light Bulb", models['cylinder'], textures['lamp'])
+    light_bulb.add_transform(new Rotate(90, 1, 0 , 0));
+    let sf = 0.6
+    light_bulb.add_transform(new Scale(0.6,0.6,0.6));
     light_node.add_child(light_bulb)
 
 
@@ -182,6 +185,11 @@ function light(models, textures, lighting_controller){
 
 }
 
+
+function make_light_rail(models, textures){
+    let lr = new SceneModelNode("Floor", models['box'], textures['wood']);
+    
+}
 
 function make_clock(models, textures){
 
@@ -201,28 +209,28 @@ function make_clock(models, textures){
     
     
 
-    let backplate = new SceneModelNode("Clock Back Plate", models['box'], textures['feature_wall'])
+    let backplate = new SceneModelNode("Clock Back Plate", models['box'], textures['brushed_metal'])
     backplate.add_transform(new Translate(0, 3, 0))
     backplate.add_transform(new Scale(2, 2, clock_thickness))
     //light_node.add_transform(new Translate(0, 0, 0))
 
 
     let hand_offset = clock_thickness+hand_thickness*2
-    let hours = new SceneModelNode("Clock Hours", models['box'], textures['wall'])
+    let hours = new SceneModelNode("Clock Hours", models['box'], textures['brushed_metal_dark'])
     hours.add_transform(new Translate(0, hr_hand_length/2-spoke_size, hand_spacing+hand_offset))
     hours.add_transform(new Scale(hr_hand_width, hr_hand_length, hand_thickness))
     
     let hr_ani = new SceneAnimationNode("Hours animation", {}, animation_hours)
     hr_ani.add_child(hours)
    
-    let minutes = new SceneModelNode("Clock Minutes", models['box'], textures['wall'])
+    let minutes = new SceneModelNode("Clock Minutes", models['box'], textures['brushed_metal_dark'])
     minutes.add_transform(new Translate(0, min_hand_length/2- spoke_size, hand_spacing*2+hand_offset))
     minutes.add_transform(new Scale(min_hand_width, min_hand_length, hand_thickness))
     
     let min_ani = new SceneAnimationNode("Hours animation", {}, animation_minutes)
     min_ani.add_child(minutes)
 
-    let seconds = new SceneModelNode("Clock Seconds", models['box'], textures['wall'])
+    let seconds = new SceneModelNode("Clock Seconds", models['box'], textures['brushed_metal_light'])
     seconds.add_transform(new Translate(0, sec_hand_length/2-spoke_size, hand_spacing*3+hand_offset)) 
     seconds.add_transform(new Scale(sec_hand_width, sec_hand_length, hand_thickness))
     //seconds.add_animation(new Animation("Seconds animation", {}, animation_seconds))

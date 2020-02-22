@@ -4,10 +4,14 @@ function make_all_textures(gl, uniforms){
 
     textures['wood'] =  tc.make_texture('../Textures/wood.png');
     textures['dark_wood'] =  tc.make_texture('../Textures/dark_wood.png');
-    textures['diamond'] =  tc.make_texture('../Textures/diamond.png');
     textures['stone'] =  tc.make_texture('../Textures/stone.png');
+    textures['carpet'] =  tc.make_texture('../Textures/carpet.png');
     textures['feature_wall'] =  tc.make_texture('../Textures/fw.png');
-    textures['wall'] =  tc.make_texture('../Textures/wall2.png');
+    textures['wall'] =  tc.make_texture('../Textures/wall.png');
+    textures['brushed_metal'] =  tc.make_texture('../Textures/brushed_metal.png');
+    textures['brushed_metal_dark'] =  tc.make_texture('../Textures/brushed_metal_dark.png');
+    textures['brushed_metal_light'] =  tc.make_texture('../Textures/brushed_metal_light.png');
+    textures['lamp'] =  tc.make_texture('../Textures/lamp2.png');
 
 
     return textures
