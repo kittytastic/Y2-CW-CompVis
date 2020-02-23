@@ -241,7 +241,7 @@ function set_binding(kb_controller){
   kb_controller.add_action('d', (dt)=>{g_camera.move_left(KB_MOVE_PS*dt);});
   kb_controller.add_action('a', (dt)=>{g_camera.move_right(KB_MOVE_PS*dt);});
   kb_controller.add_action(' ', (dt)=>{g_camera.move_up(KB_MOVE_PS*dt);});
-  kb_controller.add_action('Shift', (dt)=>{g_camera.move_down(KB_MOVE_PS*dt);});
+  kb_controller.add_action('c', (dt)=>{g_camera.move_down(KB_MOVE_PS*dt);});
   
   // Camera angle
   kb_controller.add_action('u', (dt)=>{g_camera.look_up(KB_TURN_ANGLE_PS*dt);});
