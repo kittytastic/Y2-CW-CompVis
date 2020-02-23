@@ -5,11 +5,7 @@ function make_scene(models, textures, lighting_controller){
     g_chair_y_transform = new Rotate(g_yAngle, 0, 1, 0);
     g_chair_x_transform = new Rotate(g_xAngle, 1, 0, 0);
 
-    let chair1 = make_light_chair(models, textures, lighting_controller);
-    chair1.add_transform(g_chair_x_transform);
-    chair1.add_transform(g_chair_y_transform);
-    chair1.add_transform(new Translate(0, 3, 0));
-    chair1.add_transform(new Scale(0.5, 0.5, 0.5))
+    
 
 
    
@@ -66,61 +62,6 @@ function make_chair(models, textures){
     return chair;
 }
 
-function make_light_chair(models, textures, lighting_controller){
-    let chair = new SceneWrapperNode("Chair");
-
-
-    let light = lighting_controller.get_point_light();
-    light.set_colour(1,1,1);
-
-    let light_node = new SceneLightingNode("Light", light);
-    light_node.add_transform(new Translate(0, -2, 1))
-
-    //let light_box = new SceneModelNode( "Light box", models['box'], textures['wood']);
-    let light_box = new SceneWrapperNode("Light box")
-    light_box.add_transform(new Scale(0.5, 1.5, 0.5));
-    light_box.add_transform(new Translate(0,2,1))
-    light_box.add_child(light_node)
-
-
-    let back = new SceneModelNode( "Back", models['box'], textures['dark_wood']);
-    back.add_transform(new Translate(0, 1.25, -0.75))
-    back.add_transform(new Scale(2.0, 2.0, 0.5))
-    
-    let seat = new SceneModelNode("Seat", models['box'], textures['dark_wood']);
-    seat.add_transform(new Scale(2.0, 0.5, 2.0))
-    seat.add_child(light_box);
-
-
-    let leg1 = new SceneModelNode( "Leg 1", models['box'], textures['dark_wood']);
-    leg1.add_transform(new Translate(0.75, -1, -0.75))
-    leg1.add_transform(new Scale(0.5, 1.5, 0.5))
-
-    let leg2 = new SceneModelNode("Leg 2", models['box'], textures['dark_wood']);
-    leg2.add_transform(new Translate(0.75, -1, 0.75))
-    leg2.add_transform(new Scale(0.5, 1.5, 0.5))
-
-    let leg3 = new SceneModelNode("Leg 3", models['box'], textures['dark_wood']);
-    leg3.add_transform(new Translate(-0.75, -1, -0.75))
-    leg3.add_transform(new Scale(0.5, 1.5, 0.5))
-    
-    let leg4 = new SceneModelNode("Leg 4", models['box'], textures['dark_wood']);
-    leg4.add_transform(new Translate(-0.75, -1, 0.75))
-    leg4.add_transform(new Scale(0.5, 1.5, 0.5))
-
-    
-
-    chair.add_child(back)
-    chair.add_child(seat)
-    chair.add_child(leg1)
-    chair.add_child(leg2)
-    chair.add_child(leg3)
-    chair.add_child(leg4)
-    
-
-    return chair;
-}
-
 function building(models, textures, lighting_controller){
     let wall = []
     let thickness = 0.5
@@ -152,16 +93,55 @@ function building(models, textures, lighting_controller){
 
 
 
-    let floor = new SceneModelNode("Floor", models['floor'], textures['carpet']);
+    
     let ceiling = new SceneModelNode("Ceiling", models['floor'], textures['wood']);
     ceiling.add_transform(new Translate(0, height, 0));
     ceiling.add_child(light(models, textures, lighting_controller))
     //floor.add_transform(new Scale(x_length, 0.5, z_length))
 
-    return [...wall, floor, ceiling]
+    return [...wall, make_floor(models, textures), ceiling]
 
 }
 
+
+function make_floor(models, textures){
+    let floor = new SceneModelNode("Floor", models['floor'], textures['carpet']);
+
+    let sofa = new SceneModelNode("Sofa", models['sofa'], textures['sofa']);
+    sofa.add_transform(new Rotate(-90, 1,0,0))
+    sofa.add_transform(new Translate(8,3,1))
+
+
+    floor.add_child(sofa);
+    floor.add_child(make_table_set(models, textures))
+
+
+    return floor
+}
+
+
+
+function make_table_set(models, textures){
+    let table_set = new SceneWrapperNode("Table set");
+    table_set.add_transform(new Translate(-9,0,0))
+
+    let chair = []
+    chair.push(make_chair(models, textures));
+    chair.push(make_chair(models, textures));
+    chair.push(make_chair(models, textures));
+    chair.push(make_chair(models, textures));
+
+    for(let i=0; i<4; i++){
+        
+        chair[i].add_transform(new Rotate(90*i, 0, 1, 0))
+        chair[i].add_transform(new Translate(0, 2, -3))
+    }
+
+    table_set.add_child(chair)
+
+    return table_set
+
+}
 
 
 function light(models, textures, lighting_controller){
