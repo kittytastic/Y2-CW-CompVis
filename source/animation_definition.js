@@ -75,3 +75,18 @@ function animation_minutes(model_matrix, deltaTime, prevState){
 
     return {...prevState, time:new_time}
  }
+
+
+ function animation_light_off(light, deltaTime, prevState){
+
+    let s = new Date().getSeconds();
+ 
+     if(s%5 == 1){
+         light.set_colour(0,0,0)
+     }else{
+        light.set_colour(1,1,1)
+     }
+ 
+     return {...prevState}
+ }
+ 

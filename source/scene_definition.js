@@ -191,6 +191,7 @@ function light(models, textures, lighting_controller){
 
     let light_node = new SceneLightingNode("Light", light);
     light_node.add_transform(new Translate(0, -2, 0))
+    light_node.add_animation(new AnimationLight("Light on off", {}, animation_light_off))
     
 
     let light_bulb = new SceneModelNode("Light Bulb", models['cylinder'], textures['lamp'])

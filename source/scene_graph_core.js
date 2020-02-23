@@ -208,6 +208,13 @@ class SceneLightingNode extends SceneNode{
         // Do nothing, light has already been placed
     }
 
+
+    _apply_animations(model_matrix, deltaTime){
+        for(let i=0; i<this.animations.length; i++){
+            this.animations[i].apply(this.light, deltaTime);
+        }
+    }
+
 }
 
 class SceneAnimationNode extends SceneNode{
