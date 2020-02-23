@@ -65,32 +65,13 @@ function animation_minutes(model_matrix, deltaTime, prevState){
  function light_sway(model_matrix, deltaTime, prevState){
     deltaTime *=  0.001;
     
+    let inital_displacment = 55
 
-    let sway_v = 10;
-    let threshold = 50;
+    let new_time = prevState.time + deltaTime 
+    let new_angle = (inital_displacment/360)*2*Math.PI *Math.cos(9.81/prevState.length * new_time)
+    let angle_degrees = new_angle/(2*Math.PI)*360
 
-    let new_angle = prevState.angle;
-    let new_direction = prevState.direction
+    model_matrix.rotate(angle_degrees, 1, 0, 0);
 
-    if(prevState.direction){
-        new_angle += sway_v * deltaTime
-       
-    }else{
-        new_angle -= sway_v * deltaTime
-    }
-
-    if(new_angle>threshold&&prevState.direction){
-        new_angle = threshold
-        new_direction = false;
-    }
-
-    if(new_angle<(-threshold)&&!prevState.direction){
-        new_angle = -threshold
-        new_direction = true
-    }
-
-    model_matrix.rotate(new_angle, 1, 0, 0);
-    //model_matrix.translate(new_angle, 0, 0)
-
-    return {angle:new_angle, direction:new_direction}
+    return {...prevState, time:new_time}
  }

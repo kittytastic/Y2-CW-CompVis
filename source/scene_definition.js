@@ -149,7 +149,7 @@ function light(models, textures, lighting_controller){
     let light_obj = new SceneWrapperNode("Light Cord")
     light_obj.add_transform(new Translate(0, -0.5, 0)) 
 
-    light_obj.add_animation(new Animation("Light animation", {angle: 0, direction: false}, light_sway))
+    light_obj.add_animation(new Animation("Light animation", {length: 10, time: 0}, light_sway))
 
     let light_cord = new SceneModelNode("Light Cord", models['cylinder'], textures['brushed_metal_dark'])
     light_cord.add_transform(new Translate(0, -1, 0))
