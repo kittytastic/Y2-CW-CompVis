@@ -115,7 +115,6 @@ function make_floor(models, textures){
     floor.add_child(sofa);
     floor.add_child(make_table_set(models, textures))
 
-
     return floor
 }
 
@@ -137,10 +136,37 @@ function make_table_set(models, textures){
         chair[i].add_transform(new Translate(0, 2, -3))
     }
 
+    let table = make_table(models, textures)
+    table.add_transform(new Translate(0, 0.5, 0))
+
     table_set.add_child(chair)
+    table_set.add_child(table)
 
     return table_set
 
+}
+
+
+
+function make_table(models, textures){
+
+    let base = new SceneModelNode("Table Base", models['box'], textures['brushed_metal_dark'])
+    base.add_transform(new Scale(1.5,0.2,1.5), true)
+    let leg = new SceneModelNode("Table Leg", models['cylinder'], textures['brushed_metal_dark'])
+    leg.add_transform(new Rotate(90,1,0,0), true)
+    leg.add_transform(new Scale(0.2,0.2,1.5), true)
+    leg.add_transform(new Translate(0,1,0))
+    let top = new SceneModelNode("Table Top", models['box'], textures['dark_wood'])
+    top.add_transform(new Translate(0,1.5,0))
+    top.add_transform(new Scale(3,0.1,3), true)
+
+    base.add_child(leg)
+    leg.add_child(top)
+
+   
+
+
+        return base
 }
 
 
@@ -149,7 +175,7 @@ function light(models, textures, lighting_controller){
     let light_obj = new SceneWrapperNode("Light Cord")
     light_obj.add_transform(new Translate(0, -0.5, 0)) 
 
-    light_obj.add_animation(new Animation("Light animation", {length: 10, time: 0}, light_sway))
+    light_obj.add_animation(new Animation("Light animation", {length: 7, time: 0}, light_sway))
 
     let light_cord = new SceneModelNode("Light Cord", models['cylinder'], textures['brushed_metal_dark'])
     light_cord.add_transform(new Translate(0, -1, 0))
