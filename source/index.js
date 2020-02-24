@@ -82,7 +82,7 @@ function main() {
   
   
   // Initialise camera
-  g_camera = new Camera(0,1.8 * METER_TO_UNITS,3,0,0);
+  g_camera = new Camera(13, 1.8 * METER_TO_UNITS, 3.6, 80, 0);
 
   // Make 3D models
   let models = make_all_models(gl);

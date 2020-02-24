@@ -3,15 +3,49 @@
   <head>
     <meta charset="utf-8" />
     <title>LR-Sim 2020</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+      body{
+        margin: 1em;
+      }
+
+      .center{
+       display: flex;
+       justify-content: center;
+       padding-bottom: 2em;;
+      }
+    </style>
   </head>
 
   <body onload="main()">
-    <canvas id="webgl" width="1500" height="700">
-    Please use a browser that supports "canvas"
-    </canvas>
+    
+      <div class="center">
+       
+          <canvas id="webgl" width="1500" height="700">
+          Please use a browser that supports "canvas"
+          </canvas>
+        
+      </div>
 
-    <p>Camera x:<span id="c_x"></span> y:<span id="c_y"></span> z:<span id="c_z"></span></p>
-    <p>Debug x:<span id="d_x"></span> y:<span id="d_y"></span> z:<span id="d_z"></span></p>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <h3>Movement</h3>keys: <b>W, A, S, D</b>
+        </div>
+        <div class="col-sm">
+          <h3>Camera Direction</h3>keys: <b>U, H, J, K</b>
+        </div>
+        <div class="col-sm">
+          <h3>Actions</h3> Trigger chairs being pulled in/out: <b> O </b>
+        </div>
+        <div class="col-sm">
+          <h3>Info</h3>Camera <i>X</i>: <span id="c_x"></span> <i>Y</i>: <span id="c_y"></span> <i>Z</i>: <span id="c_z"></span>
+        </div>
+      </div>
+    </div>
+   
+    <!--<p>Debug x:<span id="d_x"></span> y:<span id="d_y"></span> z:<span id="d_z"></span></p>-->
 
     <!-- Libraries -->
     <script src="../lib/webgl-utils.js"></script>
