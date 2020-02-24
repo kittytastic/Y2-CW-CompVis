@@ -82,9 +82,10 @@ function animation_minutes(model_matrix, deltaTime, prevState){
     let s = new Date().getSeconds();
  
      if(s%5 == 1){
-         light.set_colour(0,0,0)
-     }else{
         light.set_colour(0.05,0,0)
+     }else{
+        
+        light.set_colour(0,0,0)
      }
  
      return {...prevState}
@@ -127,8 +128,8 @@ var G_CHAIRS_OUT = true;
  
  function do_texture_change(deltaTime, prevState){
 
-    let light_tex_a = 'sofa'
-    let light_tex_b = 'dark_wood'
+    let light_tex_a = 'light_hi'
+    let light_tex_b = 'light_low'
     let t = light_tex_a
 
 

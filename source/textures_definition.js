@@ -13,6 +13,8 @@ function make_all_textures(gl, uniforms){
     textures['brushed_metal_light'] =  tc.make_texture('../Textures/brushed_metal_light.png');
     textures['lamp'] =  tc.make_texture('../Textures/lamp.png');
     textures['sofa'] =  tc.make_texture('../Textures/sofa.png');
+    textures['light_hi'] =  tc.make_texture('../Textures/light_hi.png');
+    textures['light_low'] =  tc.make_texture('../Textures/light_low.png');
 
 
     return textures

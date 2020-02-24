@@ -315,12 +315,12 @@ function make_tv(models, textures, lighting_controller){
 
     let light_node = new SceneLightingNode("Light", point_light);
     light_node.add_transform(new Translate(0, 0, -1))
-    //light_node.add_animation(new AnimationLight("Light on off", {}, animation_light_off))
+    light_node.add_animation(new AnimationLight("Light on off", {}, animation_light_off))
     
 
-    let light_bulb = new SceneModelTextureAnimationNode("Light Bulb", models['box'], textures['sofa'])
+    let light_bulb = new SceneModelTextureAnimationNode("Light Bulb", models['box'], textures['light_hi'])
     light_bulb.bind_textures(textures)
-    light_bulb.add_animation(new AnimationTexture("Light bulb change", {texture:'sofa'},do_texture_change))
+    light_bulb.add_animation(new AnimationTexture("Light bulb change", {texture:'light_hi'}, do_texture_change))
     light_bulb.add_transform(new Translate(0, 3, 0))
     light_bulb.add_transform(new Scale(0.05, 0.1, 0.05));
     
