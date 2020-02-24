@@ -66,7 +66,12 @@ function make_floor(models, textures){
     sofa.add_transform(new Translate(8,3,1))
 
 
+    let sculpture = new SceneModelNode("Sculpture", models['sculpture'], textures['brushed_metal']);
+    sculpture.add_transform(new Rotate(270, 1, 0, 0));
+    sculpture.add_transform(new Translate(12, -6, 1.8))
+
     floor.add_child(sofa);
+    floor.add_child(sculpture);
     floor.add_child(make_table_set(models, textures))
     floor.add_child(make_coffee_table(models, textures));
 
