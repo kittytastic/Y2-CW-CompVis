@@ -3,16 +3,21 @@ class KeyboardController{
     currently_down = {}
     key_press_queue = []
     action = {}
-
+    press = {}
 
     constructor(){
         // Bind key listeners
         document.onkeydown = this._keydown.bind(this);
         document.onkeyup = this._keyup.bind(this);
+        document.onkeypress = this._keypress.bind(this)
     }
 
     add_action(key, action_func){
         this.action[key] = action_func;
+    }
+
+    add_press(key, action_func){
+      this.press[key] = action_func;
     }
 
     _keydown(ev){
@@ -27,6 +32,12 @@ class KeyboardController{
         this.currently_down[ev.key] = false
         let dur = now - this.key_down_time[ev.key]
         this.key_press_queue.push({key: ev.key, time:dur});
+      }
+
+      _keypress(ev){
+        if(this.press[ev.key]){
+          this.press[ev.key]();
+        }
       }
       
       

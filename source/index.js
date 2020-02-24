@@ -248,5 +248,9 @@ function set_binding(kb_controller){
   kb_controller.add_action('j', (dt)=>{g_camera.look_down(KB_TURN_ANGLE_PS*dt);});
   kb_controller.add_action('h', (dt)=>{g_camera.look_left(KB_TURN_ANGLE_PS*dt);});
   kb_controller.add_action( 'k', (dt)=>{g_camera.look_right(KB_TURN_ANGLE_PS*dt);});
+
+
+  // Pull out chairs
+  kb_controller.add_press('o', (dt)=>{G_CHAIRS_OUT = !G_CHAIRS_OUT});
        
 }

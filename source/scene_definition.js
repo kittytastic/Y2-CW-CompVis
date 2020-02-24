@@ -134,6 +134,8 @@ function make_table_set(models, textures){
         
         chair[i].add_transform(new Rotate(90*i, 0, 1, 0))
         chair[i].add_transform(new Translate(0, 2, -3))
+
+        chair[i].add_animation(new Animation("Pull out chair", {pos: 0, dir: [0, 0, -1]}, move_chairs))
     }
 
     let table = make_table(models, textures)
@@ -191,7 +193,7 @@ function light(models, textures, lighting_controller){
 
     let light_node = new SceneLightingNode("Light", light);
     light_node.add_transform(new Translate(0, -2, 0))
-    light_node.add_animation(new AnimationLight("Light on off", {}, animation_light_off))
+    //light_node.add_animation(new AnimationLight("Light on off", {}, animation_light_off))
     
 
     let light_bulb = new SceneModelNode("Light Bulb", models['cylinder'], textures['lamp'])

@@ -90,3 +90,34 @@ function animation_minutes(model_matrix, deltaTime, prevState){
      return {...prevState}
  }
  
+
+var G_CHAIRS_OUT = true;
+
+ function move_chairs(model_matrix, deltaTime, prevState){
+    deltaTime *= 0.001
+    
+    let distance = 1.5
+        let chair_speed = 1;
+    let change = 0;
+
+
+    if(G_CHAIRS_OUT){
+        if(prevState.pos>0){
+            change = - chair_speed*deltaTime
+        }
+    }else{
+        if(prevState.pos<distance){
+            change = chair_speed * deltaTime
+        }
+    }
+
+    let new_pos = prevState.pos + change;
+
+    if(new_pos>0){
+        model_matrix.translate(new_pos*prevState.dir[0], new_pos*prevState.dir[1], new_pos*prevState.dir[2])
+    }
+
+
+
+    return {...prevState, pos:new_pos}
+ }
