@@ -91,7 +91,7 @@ function main() {
   let textures = make_all_textures(gl, uniforms);
 
   // Make scene graph
-  g_scene_graph = make_scene(models, textures, lc);
+  g_scene_graph = make_scene_graph(models, textures, lc);
 
   // Set keyboard actions
   g_keyboard_controller = new KeyboardController();
@@ -124,7 +124,7 @@ function start_render_loop(gl, uniforms){
 function draw(gl, uniforms, deltaTime) {
 
   // Check the keyboard for any keys currently held down
-  g_keyboard_controller.apply_key_actions()
+  g_keyboard_controller.apply_timed_actions()
 
   // Clear color and depth buffer
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -146,18 +146,18 @@ function draw(gl, uniforms, deltaTime) {
 function set_binding(kb_controller){
   
   // Camera position
-  kb_controller.add_action('KeyW', (dt)=>{g_camera.move_forwards(KB_MOVE_PS*dt);});
-  kb_controller.add_action('KeyS', (dt)=>{g_camera.move_backwards(KB_MOVE_PS*dt);});
-  kb_controller.add_action('KeyD', (dt)=>{g_camera.move_left(KB_MOVE_PS*dt);});
-  kb_controller.add_action('KeyA', (dt)=>{g_camera.move_right(KB_MOVE_PS*dt);});
-  kb_controller.add_action('Space', (dt)=>{g_camera.move_up(KB_MOVE_PS*dt);});
-  kb_controller.add_action('KeyC', (dt)=>{g_camera.move_down(KB_MOVE_PS*dt);});
+  kb_controller.add_timed_action('KeyW', (dt)=>{g_camera.move_forwards(KB_MOVE_PS*dt);});
+  kb_controller.add_timed_action('KeyS', (dt)=>{g_camera.move_backwards(KB_MOVE_PS*dt);});
+  kb_controller.add_timed_action('KeyD', (dt)=>{g_camera.move_left(KB_MOVE_PS*dt);});
+  kb_controller.add_timed_action('KeyA', (dt)=>{g_camera.move_right(KB_MOVE_PS*dt);});
+  kb_controller.add_timed_action('Space', (dt)=>{g_camera.move_up(KB_MOVE_PS*dt);});
+  kb_controller.add_timed_action('KeyC', (dt)=>{g_camera.move_down(KB_MOVE_PS*dt);});
   
   // Camera angle
-  kb_controller.add_action('KeyU', (dt)=>{g_camera.look_up(KB_TURN_ANGLE_PS*dt);});
-  kb_controller.add_action('KeyJ', (dt)=>{g_camera.look_down(KB_TURN_ANGLE_PS*dt);});
-  kb_controller.add_action('KeyH', (dt)=>{g_camera.look_left(KB_TURN_ANGLE_PS*dt);});
-  kb_controller.add_action( 'KeyK', (dt)=>{g_camera.look_right(KB_TURN_ANGLE_PS*dt);});
+  kb_controller.add_timed_action('KeyU', (dt)=>{g_camera.look_up(KB_TURN_ANGLE_PS*dt);});
+  kb_controller.add_timed_action('KeyJ', (dt)=>{g_camera.look_down(KB_TURN_ANGLE_PS*dt);});
+  kb_controller.add_timed_action('KeyH', (dt)=>{g_camera.look_left(KB_TURN_ANGLE_PS*dt);});
+  kb_controller.add_timed_action( 'KeyK', (dt)=>{g_camera.look_right(KB_TURN_ANGLE_PS*dt);});
 
 
   // Pull out chairs

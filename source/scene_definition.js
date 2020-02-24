@@ -1,4 +1,6 @@
-function make_scene(models, textures, lighting_controller){
+
+// Make the scene graph
+function make_scene_graph(models, textures, lighting_controller){
 
     let scene_graph = new SceneGraph("root")
 
