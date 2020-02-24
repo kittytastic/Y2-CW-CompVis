@@ -80,6 +80,15 @@ function make_box_model(gl) {
    //  | |v7---|-|v4
    //  |/      |/
    //  v2------v3
+
+   x_rep = x/METER_TO_UNITS * texture_rate
+   y_rep = y/METER_TO_UNITS * texture_rate
+   z_rep = z/METER_TO_UNITS * texture_rate
+
+
+   x = x/2
+   y = y/2
+   z = z/2
    var vertices = new Float32Array([   // Coordinates
       x, y, z,  -x, y, z,  -x,-y, z,   x,-y, z, // v0-v1-v2-v3 front
       x, y, z,   x,-y, z,   x,-y,-z,   x, y,-z, // v0-v3-v4-v5 right
@@ -89,9 +98,7 @@ function make_box_model(gl) {
       x,-y,-z,  -x,-y,-z,  -x, y,-z,   x, y,-z  // v4-v7-v6-v5 back
    ]);
 
-   x_rep = x/METER_TO_UNITS * texture_rate
-   y_rep = y/METER_TO_UNITS * texture_rate
-   z_rep = z/METER_TO_UNITS * texture_rate
+  
 
   var texCoords = new Float32Array([
    x_rep, y_rep,   0.0, y_rep,   0.0, 0.0,   x_rep, 0.0, // v0-v1-v2-v3 front
