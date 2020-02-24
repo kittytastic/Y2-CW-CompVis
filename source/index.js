@@ -123,6 +123,7 @@ function start_render_loop(gl, uniforms){
 
 function draw(gl, uniforms, deltaTime) {
 
+  // Check the keyboard for any keys currently held down
   g_keyboard_controller.apply_key_actions()
 
   // Clear color and depth buffer
@@ -132,20 +133,8 @@ function draw(gl, uniforms, deltaTime) {
   let viewMatrix = g_camera.make_view_matrix();
   gl.uniformMatrix4fv(uniforms.u_ViewMatrix, false, viewMatrix.elements);
 
+  // Print camera position
   g_camera.print_debug();
-
-  // Don't apply lighting
-  //gl.uniform1i(uniforms.u_isLighting, false);
-  
-  // Draw axis
-  draw_axis(gl, uniforms);
-  
-  // Apply lighting
-  //gl.uniform1i(uniforms.u_isLighting, true);
-
-  // Transform the chair
-  g_chair_x_transform.update(g_xAngle, 1, 0, 0);
-  g_chair_y_transform.update(g_yAngle, 0, 1, 0);
   
   // Draw scene
   g_scene_graph.draw(gl, uniforms, deltaTime)    
@@ -154,77 +143,6 @@ function draw(gl, uniforms, deltaTime) {
 
 
 
-
-
-function draw_axis(gl, uniforms){
-  
-  // Set the vertex coordinates and color (for the x, y axes)
-
-  var n = initAxesVertexBuffers(gl);
-  if (n < 0) {
-    console.log('Failed to set the vertex information');
-    return;
-  }
-
-  // Calculate the view matrix and the projection matrix
-  var modelMatrix = new Matrix4(); 
-  modelMatrix.setTranslate(0, 0, 0);  // No Translation
-  // Pass the model matrix to the uniform variable
-  gl.uniformMatrix4fv(uniforms.u_ModelMatrix, false, modelMatrix.elements);
-
-  // Draw x and y axes
-  gl.drawArrays(gl.LINES, 0, n);
-}
-
-
-function initAxesVertexBuffers(gl) {
-
-  var verticesColors = new Float32Array([
-    // Vertex coordinates and color (for axes)
-    -20.0,  0.0,   0.0,  1.0,  1.0,  1.0,  // (x,y,z), (r,g,b) 
-     20.0,  0.0,   0.0,  1.0,  1.0,  1.0,
-     0.0,  20.0,   0.0,  1.0,  1.0,  1.0, 
-     0.0, -20.0,   0.0,  1.0,  1.0,  1.0,
-     0.0,   0.0, -20.0,  1.0,  1.0,  1.0, 
-     0.0,   0.0,  20.0,  1.0,  1.0,  1.0 
-  ]);
-  var n = 6;
-
-  // Create a buffer object
-  var vertexColorBuffer = gl.createBuffer();  
-  if (!vertexColorBuffer) {
-    console.log('Failed to create the buffer object');
-    return false;
-  }
-
-  // Bind the buffer object to target
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, verticesColors, gl.STATIC_DRAW);
-
-  var FSIZE = verticesColors.BYTES_PER_ELEMENT;
-  //Get the storage location of a_Position, assign and enable buffer
-  var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-  if (a_Position < 0) {
-    console.log('Failed to get the storage location of a_Position');
-    return -1;
-  }
-  gl.vertexAttribPointer(a_Position, 3, gl.FLOAT, false, FSIZE * 6, 0);
-  gl.enableVertexAttribArray(a_Position);  // Enable the assignment of the buffer object
-
-  // Get the storage location of a_Position, assign buffer and enable
-  var a_Color = gl.getAttribLocation(gl.program, 'a_Color');
-  if(a_Color < 0) {
-    console.log('Failed to get the storage location of a_Color');
-    return -1;
-  }
-  gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, FSIZE * 6, FSIZE * 3);
-  gl.enableVertexAttribArray(a_Color);  // Enable the assignment of the buffer object
-
-  // Unbind the buffer object
-  gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-  return n;
-}
 
 
 function set_binding(kb_controller){
