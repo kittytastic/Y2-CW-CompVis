@@ -21,8 +21,6 @@ class Camera{
   }
 
   make_view_matrix(){
-    //console.log("x:"+this.x+"  y:"+this.y+"  z:"+this.z + "  hoz:"+this.horizontal_angle+"  vert:"+this.vertical_angle);
-
     if(isNaN(this.x)||isNaN(this.y)||isNaN(this.z)||isNaN(this.horizontal_angle)||isNaN(this.vertical_angle)){
       console.log("A glitch happened with camera coords, resetting camera position");
       this.x = 0
