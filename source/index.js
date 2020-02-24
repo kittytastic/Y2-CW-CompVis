@@ -234,7 +234,7 @@ function set_binding(kb_controller){
   kb_controller.add_action('KeyS', (dt)=>{g_camera.move_backwards(KB_MOVE_PS*dt);});
   kb_controller.add_action('KeyD', (dt)=>{g_camera.move_left(KB_MOVE_PS*dt);});
   kb_controller.add_action('KeyA', (dt)=>{g_camera.move_right(KB_MOVE_PS*dt);});
-  kb_controller.add_action('SPACE', (dt)=>{g_camera.move_up(KB_MOVE_PS*dt);});
+  kb_controller.add_action('Space', (dt)=>{g_camera.move_up(KB_MOVE_PS*dt);});
   kb_controller.add_action('KeyC', (dt)=>{g_camera.move_down(KB_MOVE_PS*dt);});
   
   // Camera angle

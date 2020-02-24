@@ -42,3 +42,20 @@ class Animation{
 
 
   }
+
+
+  class AnimationTexture extends Animation{
+    apply(deltaTime){
+      if(!this.animation_function){
+        console.log("Error: Unable to apply animation "+this.friendly_name+" as no animation function has been provided");
+      }else{
+        this.state = this.animation_function(deltaTime, this.state);
+        if(!this.state){
+            console.log("Error: animation "+this.friendly_name+" has not updated its state");
+        }
+      }
+      return this.state.texture
+    }
+
+
+  }

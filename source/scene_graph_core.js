@@ -180,6 +180,23 @@ class SceneModelNode extends SceneNode{
 
 }
 
+class SceneModelTextureAnimationNode extends SceneModelNode{
+    constructor(friendly_name, model, texture){
+        super(friendly_name, model, texture)
+
+
+    }
+
+
+    _apply_animations(model_matrix, deltaTime){
+        this.texture = this.texture_obj[this.animations[0].apply(deltaTime)];
+    }
+
+    bind_textures(texture_obj){
+        this.texture_obj = texture_obj
+    }
+}
+
 
 class SceneLightingNode extends SceneNode{
     light;

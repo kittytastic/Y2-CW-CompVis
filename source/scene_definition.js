@@ -13,12 +13,13 @@ function make_scene(models, textures, lighting_controller){
     scene_graph.add_child(building(models, textures, lighting_controller))
    // scene_graph.add_child(clock(models, textures))
 
-   let c = new SceneModelNode("Cylinder", models['cylinder'], textures['wood'])
-   c.add_transform(new Translate(2,2,2))
-   c.add_transform(new Scale(5,5,5))
-   c.add_child(new SceneDebugNode())
+   //let c = new SceneModelNode("Cylinder", models['cylinder'], textures['wood'])
+   //c.add_transform(new Translate(2,2,2))
+   //c.add_transform(new Scale(5,5,5))
+   //c.add_child(new SceneDebugNode())
    //scene_graph.add_child(c)
 
+   scene_graph.add_child(make_tv(models, textures, lighting_controller))
 
     return scene_graph;
 }
@@ -114,6 +115,7 @@ function make_floor(models, textures){
 
     floor.add_child(sofa);
     floor.add_child(make_table_set(models, textures))
+    floor.add_child(make_coffee_table(models, textures));
 
     return floor
 }
@@ -166,9 +168,7 @@ function make_table(models, textures){
     leg.add_child(top)
 
    
-
-
-        return base
+    return base
 }
 
 
@@ -235,7 +235,6 @@ function make_clock(models, textures){
     let backplate = new SceneModelNode("Clock Back Plate", models['box'], textures['brushed_metal'])
     backplate.add_transform(new Translate(0, 3, 0))
     backplate.add_transform(new Scale(2, 2, clock_thickness))
-    //light_node.add_transform(new Translate(0, 0, 0))
 
 
     let hand_offset = clock_thickness+hand_thickness*2
@@ -256,16 +255,77 @@ function make_clock(models, textures){
     let seconds = new SceneModelNode("Clock Seconds", models['box'], textures['brushed_metal_light'])
     seconds.add_transform(new Translate(0, sec_hand_length/2-spoke_size, hand_spacing*3+hand_offset)) 
     seconds.add_transform(new Scale(sec_hand_width, sec_hand_length, hand_thickness))
-    //seconds.add_animation(new Animation("Seconds animation", {}, animation_seconds))
 
     let sec_ani = new SceneAnimationNode("Hours animation", {}, animation_seconds)
     sec_ani.add_child(seconds)
 
-   // backplate.add_child(hours)
     backplate.add_child(hr_ani)
     backplate.add_child(min_ani)
     backplate.add_child(sec_ani)
     
 
     return backplate
+}
+
+
+function make_coffee_table(models, textures){
+    
+    let table = new SceneWrapperNode("Coffee Table:");
+    table.add_transform(new Translate(4, 1, 0));
+    let legs = []
+    let leg_size = 0.4
+
+    for(let i=0; i<4; i++){
+        legs.push(new SceneModelNode("Coffee Leg: "+i, models['box'], textures['brushed_metal_dark']))
+        legs[i].add_transform(new Scale(leg_size, 2, leg_size), true)
+    }
+
+    let x_change = 2;
+    let z_change = 1;
+
+    legs[0].add_transform(new Translate(x_change,0,z_change))
+    legs[1].add_transform(new Translate(-x_change,0,z_change))
+    legs[2].add_transform(new Translate(x_change,0,-z_change))
+    legs[3].add_transform(new Translate(-x_change,0,-z_change))
+
+
+    let table_top = new SceneModelNode("Coffee TableTop", models['box'], textures['dark_wood'])
+    table_top.add_transform(new Scale(2*x_change+leg_size, 0.3, 2*z_change+leg_size), true);
+    table_top.add_transform(new Translate(0, 1.15, 0))
+
+    table.add_child(legs)
+    table.add_child(table_top)
+
+
+
+
+    return table
+
+}
+
+
+
+function make_tv(models, textures, lighting_controller){
+   /* let light_wrapper = new SceneWrapperNode("TV Light wrapper")
+    light_obj.add_transform(new Translate(0, -0.5, 0)) 
+*/
+
+    let point_light = lighting_controller.get_point_light();
+    point_light.set_colour(0.1,0,0);
+
+    let light_node = new SceneLightingNode("Light", point_light);
+    light_node.add_transform(new Translate(0, 0, -1))
+    //light_node.add_animation(new AnimationLight("Light on off", {}, animation_light_off))
+    
+
+    let light_bulb = new SceneModelTextureAnimationNode("Light Bulb", models['box'], textures['sofa'])
+    light_bulb.bind_textures(textures)
+    light_bulb.add_animation(new AnimationTexture("Light bulb change", {texture:'sofa'},do_texture_change))
+    light_bulb.add_transform(new Translate(0, 3, 0))
+    light_bulb.add_transform(new Scale(0.05, 0.1, 0.05));
+    
+    light_bulb.add_child(light_node);
+
+    return light_bulb
+
 }
