@@ -1,25 +1,25 @@
+// Debug mode
 const DEBUG = false
 
+// Room size in meters
 let ROOM_X = 10
 let ROOM_Z = 6
 let HEIGHT = 3
 
+// Set camera speed
 let KB_CHAIR_ANGLE_PS = 360
 let KB_MOVE_PS = 3;
 let KB_TURN_ANGLE_PS = 60;
 
+// Conversion from units to meters
 let METER_TO_UNITS = 3
 
-var g_xAngle = 0.0;    // The rotation x angle (degrees)
-var g_yAngle = 0.0;    // The rotation y angle (degrees)
-
+// Declare global objects
 let g_scene_graph;
-let g_chair_y_transform;
-let g_chair_x_transform;
-
 let g_camera;
 let g_keyboard_controller;
 
+// Name all the uniforms used in shaders
 const UNIFORMS = ['u_ModelMatrix', 'u_ViewMatrix', 'u_NormalMatrix', 'u_ProjMatrix', 'u_PointLightColor', 'u_PointLightPosition', 'u_AmbientLight', 'u_Sampler']
 
 function main() {
@@ -140,8 +140,6 @@ function draw(gl, uniforms, deltaTime) {
   g_scene_graph.draw(gl, uniforms, deltaTime)    
 
 }
-
-
 
 
 

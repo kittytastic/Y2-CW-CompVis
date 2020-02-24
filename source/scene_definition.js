@@ -2,24 +2,7 @@ function make_scene(models, textures, lighting_controller){
 
     let scene_graph = new SceneGraph("root")
 
-    g_chair_y_transform = new Rotate(g_yAngle, 0, 1, 0);
-    g_chair_x_transform = new Rotate(g_xAngle, 1, 0, 0);
-
-    
-
-
-   
-    //scene_graph.add_child(chair1)
     scene_graph.add_child(building(models, textures, lighting_controller))
-   // scene_graph.add_child(clock(models, textures))
-
-   //let c = new SceneModelNode("Cylinder", models['cylinder'], textures['wood'])
-   //c.add_transform(new Translate(2,2,2))
-   //c.add_transform(new Scale(5,5,5))
-   //c.add_child(new SceneDebugNode())
-   //scene_graph.add_child(c)
-
-   
 
     return scene_graph;
 }
