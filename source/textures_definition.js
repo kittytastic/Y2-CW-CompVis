@@ -15,6 +15,7 @@ function make_all_textures(gl, uniforms){
     textures['sofa'] =  tc.make_texture('../Textures/sofa.png');
     textures['light_hi'] =  tc.make_texture('../Textures/light_hi.png');
     textures['light_low'] =  tc.make_texture('../Textures/light_low.png');
+    textures['tv_screen'] =  tc.make_texture('../Textures/tv_screen.png');
 
 
     return textures

@@ -19,7 +19,7 @@ function make_scene(models, textures, lighting_controller){
    //c.add_child(new SceneDebugNode())
    //scene_graph.add_child(c)
 
-   scene_graph.add_child(make_tv(models, textures, lighting_controller))
+   
 
     return scene_graph;
 }
@@ -90,8 +90,10 @@ function building(models, textures, lighting_controller){
 
     wall.push(new SceneModelNode("Wall 3", models['box'], textures['wall']));
     wall[3].add_transform(new Translate(0, height/2, z_length/2))
-    wall[3].add_transform(new Scale(x_length, height, thickness))
-
+    wall[3].add_transform(new Scale(x_length, height, thickness), true)
+    let tv = make_tv(models, textures, lighting_controller)
+    tv.add_transform(new Translate(3.5,1,-thickness/2))
+    wall[3].add_child(tv)
 
 
     
@@ -306,26 +308,59 @@ function make_coffee_table(models, textures){
 
 
 function make_tv(models, textures, lighting_controller){
-   /* let light_wrapper = new SceneWrapperNode("TV Light wrapper")
-    light_obj.add_transform(new Translate(0, -0.5, 0)) 
-*/
+    let screen_height = 3
+    let screen_width = 5
+    let screen_thickness = 0.1
+
+    let bezzel_overhang = 0.05
+    let bezzel_thickness = 0.1 
+    
+    let tv_wrapper = new SceneWrapperNode("TV wrapper")
+    tv_wrapper.add_transform(new Translate(0, 0, -screen_thickness/2)) 
+
+
+   
+
+    let screen = new SceneModelNode("TV Screen", models['box'], textures['tv_screen'])
+    screen.add_transform(new Scale(screen_width, screen_height, screen_thickness))
+
+
+    let bezzels = []
+    for(let i=0; i<4; i++){bezzels.push(new SceneModelNode("TV Bezzel", models['box'], textures['brushed_metal_dark']))}
+
+    bezzels[0].add_transform(new Translate(0, screen_height/2+bezzel_thickness/2, -bezzel_overhang/2))
+    bezzels[0].add_transform(new Scale(screen_width+2*bezzel_thickness, bezzel_thickness, screen_thickness+bezzel_overhang))
+
+    bezzels[1].add_transform(new Translate(0, -(screen_height/2+bezzel_thickness/2), -bezzel_overhang/2))
+    bezzels[1].add_transform(new Scale(screen_width+2*bezzel_thickness, bezzel_thickness, screen_thickness+bezzel_overhang))
+
+    bezzels[2].add_transform(new Translate(screen_width/2 + bezzel_thickness/2, 0, -bezzel_overhang/2))
+    bezzels[2].add_transform(new Scale(bezzel_thickness, screen_height, screen_thickness + bezzel_overhang))
+
+    bezzels[3].add_transform(new Translate(-(screen_width/2 + bezzel_thickness/2), 0, -bezzel_overhang/2))
+    bezzels[3].add_transform(new Scale(bezzel_thickness, screen_height, screen_thickness + bezzel_overhang))
 
     let point_light = lighting_controller.get_point_light();
     point_light.set_colour(0.1,0,0);
 
     let light_node = new SceneLightingNode("Light", point_light);
-    light_node.add_transform(new Translate(0, 0, -1))
-    light_node.add_animation(new AnimationLight("Light on off", {}, animation_light_off))
+    light_node.add_transform(new Translate(0, -0.1, -0.1))
+    light_node.add_animation(new AnimationLight("Light on off", {r:0.05, g:0, b:0}, animation_light_off))
     
 
     let light_bulb = new SceneModelTextureAnimationNode("Light Bulb", models['box'], textures['light_hi'])
     light_bulb.bind_textures(textures)
     light_bulb.add_animation(new AnimationTexture("Light bulb change", {texture:'light_hi'}, do_texture_change))
-    light_bulb.add_transform(new Translate(0, 3, 0))
+    light_bulb.add_transform(new Translate(-screen_width*3/8, -(screen_height/2+bezzel_thickness*0.75), -screen_thickness))
     light_bulb.add_transform(new Scale(0.05, 0.1, 0.05));
     
     light_bulb.add_child(light_node);
 
-    return light_bulb
+
+    tv_wrapper.add_child(screen)
+    tv_wrapper.add_child(bezzels)
+    tv_wrapper.add_child(light_bulb)
+
+    return tv_wrapper
 
 }
