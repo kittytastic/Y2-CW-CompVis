@@ -21,22 +21,22 @@ class KeyboardController{
     }
 
     _keydown(ev){
-        if(!this.currently_down[ev.key] && this.action[ev.key]){
-          this.currently_down[ev.key] = true;
-          this.key_down_time[ev.key] = new Date()
+        if(!this.currently_down[ev.code] && this.action[ev.code]){
+          this.currently_down[ev.code] = true;
+          this.key_down_time[ev.code] = new Date()
         }
       }
       
       _keyup(ev){
         let now = new Date();
-        this.currently_down[ev.key] = false
-        let dur = now - this.key_down_time[ev.key]
-        this.key_press_queue.push({key: ev.key, time:dur});
+        this.currently_down[ev.code] = false
+        let dur = now - this.key_down_time[ev.code]
+        this.key_press_queue.push({key: ev.code, time:dur});
       }
 
       _keypress(ev){
-        if(this.press[ev.key]){
-          this.press[ev.key]();
+        if(this.press[ev.code]){
+          this.press[ev.code]();
         }
       }
       

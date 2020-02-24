@@ -229,28 +229,22 @@ function initAxesVertexBuffers(gl) {
 
 function set_binding(kb_controller){
   
-  // Chair controls
-  kb_controller.add_action('ArrowUp', (dt)=>{g_xAngle = (g_xAngle + KB_CHAIR_ANGLE_PS*dt) % 360;})
-  kb_controller.add_action('ArrowDown', (dt)=>{g_xAngle = (g_xAngle - KB_CHAIR_ANGLE_PS*dt) % 360;});
-  kb_controller.add_action('ArrowRight', (dt)=>{ g_yAngle = (g_yAngle + KB_CHAIR_ANGLE_PS*dt) % 360;});
-  kb_controller.add_action('ArrowLeft', (dt)=>{g_yAngle = (g_yAngle - KB_CHAIR_ANGLE_PS*dt) % 360;});
-  
   // Camera position
-  kb_controller.add_action('w', (dt)=>{g_camera.move_forwards(KB_MOVE_PS*dt);});
-  kb_controller.add_action('s', (dt)=>{g_camera.move_backwards(KB_MOVE_PS*dt);});
-  kb_controller.add_action('d', (dt)=>{g_camera.move_left(KB_MOVE_PS*dt);});
-  kb_controller.add_action('a', (dt)=>{g_camera.move_right(KB_MOVE_PS*dt);});
-  kb_controller.add_action(' ', (dt)=>{g_camera.move_up(KB_MOVE_PS*dt);});
-  kb_controller.add_action('c', (dt)=>{g_camera.move_down(KB_MOVE_PS*dt);});
+  kb_controller.add_action('KeyW', (dt)=>{g_camera.move_forwards(KB_MOVE_PS*dt);});
+  kb_controller.add_action('KeyS', (dt)=>{g_camera.move_backwards(KB_MOVE_PS*dt);});
+  kb_controller.add_action('KeyD', (dt)=>{g_camera.move_left(KB_MOVE_PS*dt);});
+  kb_controller.add_action('KeyA', (dt)=>{g_camera.move_right(KB_MOVE_PS*dt);});
+  kb_controller.add_action('SPACE', (dt)=>{g_camera.move_up(KB_MOVE_PS*dt);});
+  kb_controller.add_action('KeyC', (dt)=>{g_camera.move_down(KB_MOVE_PS*dt);});
   
   // Camera angle
-  kb_controller.add_action('u', (dt)=>{g_camera.look_up(KB_TURN_ANGLE_PS*dt);});
-  kb_controller.add_action('j', (dt)=>{g_camera.look_down(KB_TURN_ANGLE_PS*dt);});
-  kb_controller.add_action('h', (dt)=>{g_camera.look_left(KB_TURN_ANGLE_PS*dt);});
-  kb_controller.add_action( 'k', (dt)=>{g_camera.look_right(KB_TURN_ANGLE_PS*dt);});
+  kb_controller.add_action('KeyU', (dt)=>{g_camera.look_up(KB_TURN_ANGLE_PS*dt);});
+  kb_controller.add_action('KeyJ', (dt)=>{g_camera.look_down(KB_TURN_ANGLE_PS*dt);});
+  kb_controller.add_action('KeyH', (dt)=>{g_camera.look_left(KB_TURN_ANGLE_PS*dt);});
+  kb_controller.add_action( 'KeyK', (dt)=>{g_camera.look_right(KB_TURN_ANGLE_PS*dt);});
 
 
   // Pull out chairs
-  kb_controller.add_press('o', (dt)=>{G_CHAIRS_OUT = !G_CHAIRS_OUT});
+  kb_controller.add_press('KeyO', (dt)=>{G_CHAIRS_OUT = !G_CHAIRS_OUT});
        
 }
