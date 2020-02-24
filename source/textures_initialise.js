@@ -7,7 +7,7 @@ function make_all_textures(gl, uniforms){
     let textures = {}
     let tc = new TextureController(gl, uniforms)
 
-    // Externally created textures
+    // Textures form Minecraft texture pack (more details can be found from)
     textures['wood'] =  tc.make_texture('../Textures/External/wood.png');
     textures['dark_wood'] =  tc.make_texture('../Textures/External/dark_wood.png');
     textures['stone'] =  tc.make_texture('../Textures/External/stone.png');

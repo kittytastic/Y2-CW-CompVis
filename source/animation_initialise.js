@@ -1,32 +1,5 @@
-let AN_ROTATE_SPEED = 30;
-function rotate_x(model_matrix, deltaTime, prevState){
 
-
-    //console.log(deltaTime)
-    if(!deltaTime){
-        console.log("Error: bad time value given to animation")
-    }
-   
-    deltaTime *= 0.001;
-    let rot = prevState.rot + AN_ROTATE_SPEED * deltaTime
-    model_matrix.rotate(rot, 0, 1, 0);
-    return {...prevState, rot: rot}
-}
-
-function rotate_rev_x(model_matrix, deltaTime, prevState){
-
-
-    //console.log(deltaTime)
-    if(!deltaTime){
-        console.log("Error")
-    }
-   
-    deltaTime *= 0.001;
-    let rot = prevState.rot - AN_ROTATE_SPEED * 1 * deltaTime
-    model_matrix.rotate(rot, 0, 0, 1);
-    return {...prevState, rot: rot}
-}
-
+// clock animations
 function animation_seconds(model_matrix, deltaTime, prevState){
 
    let s = new Date().getSeconds();
@@ -38,8 +11,6 @@ function animation_seconds(model_matrix, deltaTime, prevState){
 }
 
 function animation_minutes(model_matrix, deltaTime, prevState){
-    //console.log("Clock somewhere?")
-    //print_debug_model_matrix(model_matrix)
     let d = new Date()
     let m = d.getMinutes() + d.getSeconds()/60 +d.getMilliseconds()/(60*1000);
  
@@ -50,7 +21,6 @@ function animation_minutes(model_matrix, deltaTime, prevState){
  }
 
  function animation_hours(model_matrix, deltaTime, prevState){
-
     let d = new Date()
     let h = d.getHours() + d.getMinutes()/60;
     h = h%12;
@@ -61,7 +31,7 @@ function animation_minutes(model_matrix, deltaTime, prevState){
  }
 
 
-
+// Room Light animation
  function light_sway(model_matrix, deltaTime, prevState){
     deltaTime *=  0.001;
     
@@ -77,6 +47,7 @@ function animation_minutes(model_matrix, deltaTime, prevState){
  }
 
 
+ // Animation to turn light on and off
  function animation_light_off(light, deltaTime, prevState){
 
     let s = new Date().getSeconds();
@@ -92,6 +63,7 @@ function animation_minutes(model_matrix, deltaTime, prevState){
  }
  
 
+ // Animation to move chairs in and out
 var G_CHAIRS_OUT = true;
 
  function move_chairs(model_matrix, deltaTime, prevState){
@@ -125,7 +97,7 @@ var G_CHAIRS_OUT = true;
 
 
 
- 
+ // Animation to change texture of tv light
  function do_texture_change(deltaTime, prevState){
 
     let light_tex_a = 'light_hi'

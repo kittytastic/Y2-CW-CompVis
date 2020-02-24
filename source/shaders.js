@@ -1,3 +1,4 @@
+// global variable that sets the maximum number of point lights
 var MAX_POINT_LIGHTS = 2
 
 
@@ -7,7 +8,7 @@ var VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
   'attribute vec4 a_Color;\n' +
   'attribute vec4 a_Normal;\n' +        // Normal
-  'attribute vec2 a_TexCoords;\n' +        // Normal
+  'attribute vec2 a_TexCoords;\n' +        
   'uniform mat4 u_ModelMatrix;\n' +
   'uniform mat4 u_NormalMatrix;\n' +
   'uniform mat4 u_ViewMatrix;\n' +
@@ -17,7 +18,6 @@ var VSHADER_SOURCE =
   'varying vec3 v_Position;\n' +
   'varying vec3 v_Normal;\n' +
   'varying highp vec2 v_TexCoords;\n' +
- // 'uniform bool u_isLighting;\n' +
   
   'void main() {\n' +
   '  gl_Position = u_ProjMatrix * u_ViewMatrix * u_ModelMatrix * a_Position;\n' +
@@ -50,12 +50,9 @@ var FSHADER_SOURCE =
 '       vec3 lightDirection = normalize(u_PointLightPosition[i] - v_Position);\n' +
 '       float nDotL = max(dot(lightDirection, normal), 0.0);\n' +
         // Calculate the color due to diffuse reflection
-//'       diffuse += u_PointLightColor[i] * v_Color.rgb * nDotL;\n' +
-
 '       diffuse += u_PointLightColor[i] * TexColor.rgb * nDotL;\n' +
 '     }\n' +
     // Calculate ambient lighting
-//'   vec3 ambient = u_AmbientLight * v_Color.rgb;\n' +
 '   vec3 ambient = u_AmbientLight * TexColor.rgb;\n' +
     // Colour is the sum of diffused and ambient
 '   gl_FragColor = vec4(diffuse+ambient, 1);\n' +

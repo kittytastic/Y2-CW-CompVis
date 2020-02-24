@@ -36,10 +36,13 @@ class Texture{
   }
   
   
+
+  // Adapted from: https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Using_textures_in_WebGL
   
   function loadTexture(gl, url, texture_unit) {
     const texture = gl.createTexture();
 
+    // Store texture in a specific texture unit
     gl.activeTexture(gl['TEXTURE'+texture_unit])
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -63,6 +66,7 @@ class Texture{
   
     const image = new Image();
     image.onload = function() {
+      // Store texture in a specific texture unit
       gl.activeTexture(gl['TEXTURE'+texture_unit])
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,

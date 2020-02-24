@@ -1,3 +1,5 @@
+
+// Should be used to interact with lighting. Keeps track of how many point light have been made e.t.c
 class LightingController{
     uniforms;
     gl;
@@ -84,10 +86,3 @@ class LightingController{
     }
 
   }
-
-  /*class Light{
-
-    draw(){
-      console.log("Error: please implement this method")
-    }
-  }*/

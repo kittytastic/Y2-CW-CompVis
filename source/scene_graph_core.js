@@ -1,3 +1,17 @@
+//
+// This file declares all the nodes that can be used in the scene graph
+//
+
+// The scene graph is stored as a nested tree of objects.
+// To draw a scene 2 calls are made, first to predraw, next to draw
+// Predraw calculates model matrix, applies animations and can be used to position things like lights
+// Draw used the model matrix that has been precalculated and draws all the models and textures to the screen.
+// Both Predraw and Draw are recursive calls.
+// NOTE: for performance increases draw could be flattened (as the recursive nature isn't required once model matrix has been calculated) and ordered to minimise model/texture switches 
+
+
+
+// Core node, shouldn't be used in scene graph, should only be used to inherit from
 class SceneNode{
     children = [];
     transformations = [];
@@ -180,13 +194,13 @@ class SceneModelNode extends SceneNode{
 
 }
 
+// This a special node where you want to apply an animation to its texture
 class SceneModelTextureAnimationNode extends SceneModelNode{
     constructor(friendly_name, model, texture){
         super(friendly_name, model, texture)
 
 
     }
-
 
     _apply_animations(model_matrix, deltaTime){
         this.texture = this.texture_obj[this.animations[0].apply(deltaTime)];
@@ -197,7 +211,7 @@ class SceneModelTextureAnimationNode extends SceneModelNode{
     }
 }
 
-
+// This node contains a light. Lighting animations can be applied to it
 class SceneLightingNode extends SceneNode{
     light;
     constructor(friendly_name, light){
@@ -234,6 +248,8 @@ class SceneLightingNode extends SceneNode{
 
 }
 
+// This provides a shorthand to make wrapper nodes that have no model but have an animation.
+// Useful to wrap a branch in an animation
 class SceneAnimationNode extends SceneNode{
     constructor(friendly_name, initial_state, animation_function){
         super(friendly_name)
@@ -245,7 +261,7 @@ class SceneAnimationNode extends SceneNode{
     _draw_self(){}
 }
 
-
+// This node will print its position to the debug output
 class SceneDebugNode extends SceneNode{
     constructor(friendly_name, model, texture){
         super(friendly_name)
